@@ -65,7 +65,18 @@ public class Main {
             m.insertContinent(continent); // done
             m.insertEncompasses(country); // done
             m.insertCity(country);		// done
-            m.insertProvince(country); // stopped here, need to finish
+            m.insertProvince(country); // done
+            // isMember need to parse using delims string.pares(delims) delims = " "
+            // sea
+            // river
+            // riverthrough
+            // lake
+            // island
+            // mountain 
+            // desert
+            // geo_sea?
+            // to be continued
+            // ...
             
             
 		} catch (JAXBException e) {
@@ -473,30 +484,45 @@ public class Main {
 						//debug
 						/* Insert(name, country(code), population, area, capital, capProv) */
 						for(int i = 0; i < country.province.size(); i++){
-							/* DEBUG
-							 * System.out.println("province: " + country.province.get(i).country + "  " 
+							/* DEBUG */
+							/*  System.out.println("province: " + country.province.get(i).country + "  " 
 							 
 									+ country.province.get(i).name + "  "
 									+ country.province.get(i).capital + " "
 									+ country.province.get(i).area +  " " 
 									+ country.province.get(i).population + " " 
 									+ country.province.get(i).id);
-							*/
-							/**** the last one is incorrect need to change */
+									*/
+							
+							/* Get the capital of the province, must check if city is null
+							 * for null pointer exception
+							 */
+							String capital = null;
+							if(country.province.get(i).city != null){
+							//	System.out.println(country.province.get(i).city.get(0).name);
+								capital = country.province.get(i).city.get(0).name;
+							}
+						
+							/* Insert(province name, code, pop, area, capital, name) */
 							output.write("INSERT INTO province VALUES (" + stringOrNull(country.province.get(i).name) + ","
 									+ stringOrNull(country.province.get(i).country) + ","
 									+ numOrNull(country.province.get(i).population) + ","
 									+ numOrNull(country.province.get(i).area) + ","
-									+ stringOrNull(country.province.get(i).parseCapital(country.province.get(i).capital)) + "," 
-									+ stringOrNull(country.capital) + ");\n");
+									+ stringOrNull(capital) + "," 
+									+ stringOrNull(country.province.get(i).name) + ");\n");
 						}
-					} else{ //else need to insert countries with no province and have city as cap...etc.
-						output.write("INSERT INTO province VALUES (" + stringOrNull(country.name) + ","
-								+ stringOrNull(country.code) + "," 
-								+ numOrNull(country.population) + ","
-								+ numOrNull(country.area) + ","
-								+ stringOrNull(country.capital) + "," + stringOrNull(country.name) + ");\n");
-					
+					} else{ 
+						//else need to insert countries with no province and have city as cap...etc.
+						// enter the capital city of country, check if null for np exception
+						// capital usually is the first city
+							if(country.city != null){
+								/* Insert(country, code, pop, area, capital, name) */
+								output.write("INSERT INTO province VALUES (" + stringOrNull(country.name) + ","
+										+ stringOrNull(country.code) + "," 
+										+ numOrNull(country.population) + ","
+										+ numOrNull(country.area) + ","
+										+ stringOrNull(country.city.get(0).name) + "," + stringOrNull(country.name) + ");\n");
+							}	
 						}
 					}
 				
@@ -512,8 +538,8 @@ public class Main {
 		}
 		
 	}
-	
-	
+
+
 	/* This checks if there is a String or if it contains NULL
 	 * if it is a String, we put ' surrounding it, else change
 	 * it to NULL
