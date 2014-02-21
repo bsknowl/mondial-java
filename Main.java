@@ -1,3 +1,4 @@
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -31,6 +32,7 @@ public class Main {
             ArrayList<Mountain> mountain = mondial.mountain;
             ArrayList<Lake> lake = mondial.lake;
             ArrayList<Island> island = mondial.island;
+            ArrayList<Desert> desert = mondial.desert;
             
             System.out.println("Name: " + country.get(0).name);
             System.out.println("Code: " + country.get(0).code);
@@ -89,9 +91,9 @@ public class Main {
             m.insertRiver(river);// done
             m.insertRiverThrough(river); // done
             m.insertLake(lake); // done
-            m.insertIsland(island); // island
-            // mountain 
-            // desert
+            m.insertIsland(island); // done
+            m.insertMountain(mountain); // done 
+            m.insertDesert(desert); // desert
             // geo_sea?
             // to be continued
             // ...
@@ -100,6 +102,67 @@ public class Main {
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/* Insert into desert(name, area, geoCoord) */
+	private void insertDesert(ArrayList<Desert> desert) {
+		File f = new File("countries.sql");
+		// does file exist? append if yes, else print no
+		if(f.exists()){
+			try{
+				output = new BufferedWriter(new FileWriter(f, true));
+				// insert desert values
+				
+				for(Desert d : desert){
+					
+							output.write("INSERT INTO desert VALUES ("
+									+ stringOrNull(d.getName()) + ","
+									+ numOrNull(d.getArea())
+									+ ",GeoCoord(" + numOrNull(d.getLongitude()) + "," 
+									+ numOrNull(d.getLatitude())
+									+ ")"
+									+ ");\n" );
+				}
+				output.close();
+				commit("desert");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else{
+			System.out.println("Could not append desert table to file.");
+		}
+		
+	}
+	
+	/* Insert into mountains(name, mountains, elevation, type, geoCoord) */
+	private void insertMountain(ArrayList<Mountain> mountain) {
+		File f = new File("countries.sql");
+		// does file exist? append if yes, else print no
+		if(f.exists()){
+			try{
+				output = new BufferedWriter(new FileWriter(f, true));
+				// insert mountain values
+				
+				for(Mountain m : mountain){
+					
+							output.write("INSERT INTO mountain VALUES ("
+									+ stringOrNull(m.getName()) + ","
+									+ stringOrNull(m.getMountains()) + ","
+									+ numOrNull(m.getElevation()) + ","
+									+ stringOrNull(m.getType()) + ",GeoCoord(" 
+									+ numOrNull(m.getLongitude()) + "," + numOrNull(m.getLatitude())
+									+ ")"
+									+ ");\n" );
+				}
+				output.close();
+				commit("mountain");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else{
+			System.out.println("Could not append mountain table to file.");
+		}
+		
 	}
 	/* Insert into island(name, islands, area, elevation, type, geoCoordinates) */
 	private void insertIsland(ArrayList<Island> island) {
@@ -113,12 +176,12 @@ public class Main {
 				for(Island i : island){
 					
 							output.write("INSERT INTO island VALUES ("
-									+ stringOrNull(i.name) + ","
-									+ stringOrNull(i.islands) + ","
-									+ numOrNull(i.area) + ","
-									+ numOrNull(i.elevation) + ","
-									+ stringOrNull(i.type) + ",GeoCoord(" 
-									+ numOrNull(i.longitude) + "," + numOrNull(i.latitude)
+									+ stringOrNull(i.getName()) + ","
+									+ stringOrNull(i.getIslands()) + ","
+									+ numOrNull(i.getArea()) + ","
+									+ numOrNull(i.getElevation()) + ","
+									+ stringOrNull(i.getType()) + ",GeoCoord(" 
+									+ numOrNull(i.getLongitude()) + "," + numOrNull(i.getLatitude())
 									+ ")"
 									+ ");\n" );
 				}
@@ -144,13 +207,13 @@ public class Main {
 				for(Lake l : lake){
 					String flows = flowsTo(l.to, "river");
 							output.write("INSERT INTO lake VALUES ("
-									+ stringOrNull(l.name) + ","
-									+ numOrNull(l.area) + ","
-									+ numOrNull(l.depth) + ","
+									+ stringOrNull(l.getName()) + ","
+									+ numOrNull(l.getArea()) + ","
+									+ numOrNull(l.getDepth()) + ","
 									+ numOrNull(l.elevation) + ","
 									+ stringOrNull(l.type) + ","
-									+ stringOrNull(flows) + "GeoCoord(" + numOrNull(l.longitude)
-									+ "," + numOrNull(l.latitude) + ")" +
+									+ stringOrNull(flows) + "GeoCoord(" + numOrNull(l.getLongitude())
+									+ "," + numOrNull(l.getLatitude()) + ")" +
 											");\n" );
 				}
 				output.close();
@@ -215,8 +278,8 @@ public class Main {
 									+ stringOrNull(r.name) + "," + stringOrNull(flows_to_r) + ","
 									+ stringOrNull(flows_to_l) + "," + stringOrNull(flows_to_s) + ","
 									+ numOrNull(r.length) + "," 
-									+ "GeoCoord(" + r.source.longitude + "," 
-									+ r.source.latitude + "),"
+									+ "GeoCoord(" + r.source.getLongitude() + "," 
+									+ r.source.getLatitude() + "),"
 									+ stringOrNull(r.source.mountains) +  "," 
 									+ numOrNull(r.source.elevation) + ","
 									+ "GeoCoord(" + r.estuary.longitude + "," + r.estuary.latitude 

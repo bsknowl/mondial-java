@@ -1,12 +1,14 @@
+
 import javax.xml.bind.annotation.XmlElement;
 
 public class Elements {
 
-	String name;
-	String area;
-	String depth;
-	String latitude;
-	String longitude;
+	private String name;
+	private String area;
+	private String depth;
+	private String latitude;
+	private String longitude;
+	
 	
 	@XmlElement
 	public String getName(){

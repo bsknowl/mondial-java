@@ -1,3 +1,6 @@
+
+import java.util.ArrayList;
+
 import javax.xml.bind.annotation.XmlAttribute;
 
 public class Mountain {
@@ -5,6 +8,7 @@ public class Mountain {
     private String elevation;
     private String longitude;
     private String latitude;
+    private String mountains;
 
     // Attributes for Organization element
     private String id;
@@ -12,6 +16,15 @@ public class Mountain {
     private String type;
     private String island;
 
+    private ArrayList<Located> located;
+    
+    public ArrayList<Located> getLocated(){
+    	return located;
+    }
+    public void setLocated(ArrayList<Located> located){
+    	this.located = located;
+    }
+    
     public String getElevation() {
         return elevation;
     }
@@ -20,6 +33,12 @@ public class Mountain {
         this.elevation = elevation;
     }
 
+    public String getMountains(){
+    	return mountains;
+    }
+    public void setMountains(String mountains){
+    	this.mountains = mountains;
+    }
     public String getName() {
         return name;
     }
