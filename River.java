@@ -1,20 +1,59 @@
-public class River {
+import java.util.ArrayList;
+
+import javax.xml.bind.annotation.XmlElement;
+// Let's just inherit some of Sea's stuff!
+public class River extends Sea{
 	// Element River contained in Mondial Root
 	
-	// Elements in River
-	String name;
-	String to;		// contains just attributes
-	String area;
+	// just attribute
 	String length; // just data
 	
-	String estuary;
-	
-	//Attributes
-	String id;
-	String country;
+	Estuary estuary;
 	
 	//multiple elemenst, need array or new class?
-	String source; // contains multiple elements with country attr.
-	String through; // empty data, just attr.
-	String located;
+	To to;
+	Source source; // contains multiple elements with country attr.
+	ArrayList<Through> through; // empty data, just attr.
+	
+	
+	// constructor
+	public River(){
+		super();
+	}
+	
+	@XmlElement
+	public To getTo(){
+		return to;
+	}
+	public void setTo(To to){
+		this.to = to;
+	}
+	
+	@XmlElement
+	public String getLength(){
+		return length;
+	}
+	public void setLength(String length){
+		this.length = length;
+	}
+	
+	// get and set Class Elements
+	@XmlElement
+	public Estuary getEstuary(){
+		return estuary;
+	}
+	public void setEstuary(Estuary estuary){
+		this.estuary = estuary;
+	}
+	
+	
+	
+	@XmlElement
+	public ArrayList<Through> getThrough(){
+		return through;
+	}
+	public void setThrough(ArrayList<Through> through){
+		this.through = through;
+	}
+	
 }

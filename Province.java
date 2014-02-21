@@ -78,11 +78,4 @@ public class Province {
 		this.capital = capital;
 	}
 	
-	public String parseCapital(String capital){
-		
-		String delims = "-";
-		String[] tokens = capital.split(delims);
-		System.out.println(tokens[2]);
-		return tokens[2];
-	}
 }
