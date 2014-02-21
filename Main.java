@@ -28,6 +28,7 @@ public class Main {
             ArrayList<Organization> organization = mondial.organization;
             ArrayList<Sea> sea = mondial.sea;
             ArrayList<River> river = mondial.river;
+            ArrayList<Mountain> mountain = mondial.mountain;
             
             System.out.println("Name: " + country.get(0).name);
             System.out.println("Code: " + country.get(0).code);
