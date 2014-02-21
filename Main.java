@@ -460,7 +460,7 @@ public class Main {
 							// insert continent values
 							
 							for(int i = 0; i < m.size(); i++){	
-										output.write("INSERT INTO continent VALUES (" + stringOrNull(m.get(i).name) + "," + stringOrNull(m.get(i).area) +");\n" );
+										output.write("INSERT INTO continent VALUES (" + stringOrNull(m.get(i).name) + "," + numOrNull(m.get(i).area) +");\n" );
 									}
 							output.write("\nCOMMIT;\n\n\n");
 							output.close();
