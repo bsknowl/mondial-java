@@ -30,6 +30,7 @@ public class Main {
             ArrayList<River> river = mondial.river;
             ArrayList<Mountain> mountain = mondial.mountain;
             ArrayList<Lake> lake = mondial.lake;
+            ArrayList<Island> island = mondial.island;
             
             System.out.println("Name: " + country.get(0).name);
             System.out.println("Code: " + country.get(0).code);
@@ -88,7 +89,7 @@ public class Main {
             m.insertRiver(river);// done
             m.insertRiverThrough(river); // done
             m.insertLake(lake); // done
-            // island
+            m.insertIsland(island); // island
             // mountain 
             // desert
             // geo_sea?
@@ -100,6 +101,37 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
+	/* Insert into island(name, islands, area, elevation, type, geoCoordinates) */
+	private void insertIsland(ArrayList<Island> island) {
+		File f = new File("countries.sql");
+		// does file exist? append if yes, else print no
+		if(f.exists()){
+			try{
+				output = new BufferedWriter(new FileWriter(f, true));
+				// insert island values
+				
+				for(Island i : island){
+					
+							output.write("INSERT INTO island VALUES ("
+									+ stringOrNull(i.name) + ","
+									+ stringOrNull(i.islands) + ","
+									+ numOrNull(i.area) + ","
+									+ numOrNull(i.elevation) + ","
+									+ stringOrNull(i.type) + ",GeoCoord(" 
+									+ numOrNull(i.longitude) + "," + numOrNull(i.latitude)
+									+ ")"
+									+ ");\n" );
+				}
+				output.close();
+				commit("island");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else{
+			System.out.println("Could not append island table to file.");
+		}
+	}
+
 	
 	private void insertLake(ArrayList<Lake> lake) {
 		File f = new File("countries.sql");
