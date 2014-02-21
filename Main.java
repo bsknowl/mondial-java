@@ -78,9 +78,9 @@ public class Main {
             m.insertCity(country);		// done
             m.insertProvince(country); // done
             m.insertOrganization(organization);
-            // isMember need to parse using delims string.pares(delims) delims = " "
-            // sea
-            // river
+            m.insertIsMember(organization); //done
+            m.insertSea(sea); 	// done
+            m.insertRiver(river);// river
             // riverthrough
             // lake
             // island
@@ -96,6 +96,140 @@ public class Main {
 		}
 	}
 	
+		/*** THIS INSERTS INTO river TABLE river(name, river, lake, sea, length, sourceGeoCoord, mountains
+	 * source elevation, estuaryGeoCoord)
+	 * @param river
+	 */
+	private void insertRiver(ArrayList<River> river){
+		File f = new File("countries.sql");
+		// does file exist? append if yes, else print no
+		if(f.exists()){
+			try{
+				output = new BufferedWriter(new FileWriter(f, true));
+				// insert river values
+				
+				for(River r : river){
+						String flows_to_r = flowsTo(r.to, "river");
+						String flows_to_l = flowsTo(r.to, "lake");
+						String flows_to_s = flowsTo(r.to, "sea");
+						
+							output.write("INSERT INTO river VALUES ("
+									+ stringOrNull(r.name) + "," + stringOrNull(flows_to_r) + ","
+									+ stringOrNull(flows_to_l) + "," + stringOrNull(flows_to_s) + ","
+									+ numOrNull(r.length) + "," 
+									+ "GeoCoord(" + r.source.longitude + "," 
+									+ r.source.latitude + ")," + numOrNull(r.source.elevation) + ","
+									+ "GeoCoord(" + r.estuary.longitude + "," + r.estuary.latitude 
+									 + "));\n" );
+						
+						
+					}
+				
+				output.write("\nCOMMIT;\n\n\n");
+				output.close();
+				System.out.println("Appended river table successfully");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else{
+			System.out.println("Could not append river table to file.");
+		}
+	}
+	
+	
+	private String flowsTo(To to, String dest) {
+		try{
+			//System.out.println(to.waterType);
+			if(dest.equals(to.watertype)){
+				String delims = "-";
+				String[] tokens = to.water.split(delims);
+				return tokens[1];
+			}else{
+			return null;
+			}
+		} catch(Exception e){
+			
+		}
+		return null;
+		
+	}
+
+	/*** THIS INSERTS INTO sea TABLE Sea(Name, depth) ***/
+	private void insertSea(ArrayList<Sea> sea){
+		File f = new File("countries.sql");
+		// does file exist? append if yes, else print no
+		if(f.exists()){
+			try{
+				output = new BufferedWriter(new FileWriter(f, true));
+				// insert sea values
+				
+				for(Sea s : sea){
+					
+							output.write("INSERT INTO sea VALUES ("
+									+ stringOrNull(s.name) + ","
+									+ numOrNull(s.depth)
+									 + ");\n" );
+						
+					}
+				
+				output.write("\nCOMMIT;\n\n\n");
+				output.close();
+				System.out.println("Appended sea table successfully");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else{
+			System.out.println("Could not append sea table to file.");
+		}
+	}
+	private void insertIsMember(ArrayList<Organization> organization) {
+		File f = new File("countries.sql");
+		// does file exist? append if yes, else print no
+		if(f.exists()){
+			try{
+				output = new BufferedWriter(new FileWriter(f, true));
+				// insert isMember values
+				// get member values from string (as array)
+				// default member type = "member"
+			//	String member_type = "member";
+				
+				for(Organization o : organization){
+					if(o.members != null){
+						for (Members m : o.members){
+							String[] members = getMembers(m.country);
+							for(String s : members){
+							output.write("INSERT INTO isMember VALUES ("
+									+ stringOrNull(s) + ","
+									+ stringOrNull(o.abbrev) + ","
+									+ stringOrNull(m.type)
+									 + ");\n" );
+							}
+						
+						}
+					}
+				}
+				output.write("\nCOMMIT;\n\n\n");
+				output.close();
+				System.out.println("Appended isMember table successfully");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else{
+			System.out.println("Could not append isMember table to file.");
+		}
+	}
+
+	// Gets the members out of organization
+	private String[] getMembers(String country) {
+		String delims = " ";
+		String[] tokens = country.split(delims);
+		/* Debug
+		for(String s: tokens){
+			System.out.println(s + " ");
+		}
+		*/
+		return tokens;
+	}
 	
 	private void insertEncompasses(ArrayList<Country> m) {
 		File f = new File("countries.sql");
