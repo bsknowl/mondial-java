@@ -25,6 +25,7 @@ public class Main {
             
             ArrayList<Country> country = mondial.country;
             ArrayList<Continent> continent = mondial.continent;
+            ArrayList<Organization> organization = mondial.organization;
             
             System.out.println("Name: " + country.get(0).name);
             System.out.println("Code: " + country.get(0).code);
@@ -76,6 +77,7 @@ public class Main {
             m.insertEncompasses(country); // done
             m.insertCity(country);		// done
             m.insertProvince(country); // done
+            m.insertOrganization(organization);
             // isMember need to parse using delims string.pares(delims) delims = " "
             // sea
             // river
@@ -335,8 +337,6 @@ public class Main {
 			System.out.println("Could not append politics to file.");
 		}
 	}
-	
-	
 
 	//economy table insert
 	public void insertEconomy(ArrayList<Country> m){
@@ -423,57 +423,57 @@ public class Main {
 	}
 	
 	// Insert Religion 
-		public void insertReligion(ArrayList<Country> m){
-			File f = new File("countries.sql");
-			// does file exist? append if yes, else print no
-			if(f.exists()){
-				try{
-					output = new BufferedWriter(new FileWriter(f, true));
-					// insert Religion values
-					
-					for(int i = 0; i < m.size(); i++){	
-						 // need percentage of religions
-						if(m.get(i).religions !=null){
-							for(int j = 0; j < m.get(i).religions.size(); j++){
-								output.write("INSERT INTO religion VALUES (" + stringOrNull(m.get(i).code) 
-									+ "," + stringOrNull(m.get(i).religions.get(j).name) + "," + numOrNull(m.get(i).religions.get(j).percentage) + ");\n");
-							}
-						}
-					}
-					output.write("\nCOMMIT;\n\n\n");
-					output.close();
-					System.out.println("Appended religion table successfully");
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} else{
-				System.out.println("Could not append religion table to file.");
-			}
-		}
+    public void insertReligion(ArrayList<Country> m){
+        File f = new File("countries.sql");
+        // does file exist? append if yes, else print no
+        if(f.exists()){
+            try{
+                output = new BufferedWriter(new FileWriter(f, true));
+                // insert Religion values
+
+                for(int i = 0; i < m.size(); i++){
+                     // need percentage of religions
+                    if(m.get(i).religions !=null){
+                        for(int j = 0; j < m.get(i).religions.size(); j++){
+                            output.write("INSERT INTO religion VALUES (" + stringOrNull(m.get(i).code)
+                                + "," + stringOrNull(m.get(i).religions.get(j).name) + "," + numOrNull(m.get(i).religions.get(j).percentage) + ");\n");
+                        }
+                    }
+                }
+                output.write("\nCOMMIT;\n\n\n");
+                output.close();
+                System.out.println("Appended religion table successfully");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else{
+            System.out.println("Could not append religion table to file.");
+        }
+    }
 		
 		
-		// Insert continent 
-				public void insertContinent(ArrayList<Continent> m){
-					File f = new File("countries.sql");
-					// does file exist? append if yes, else print no
-					if(f.exists()){
-						try{
-							output = new BufferedWriter(new FileWriter(f, true));
-							// insert continent values
-							
-							for(int i = 0; i < m.size(); i++){	
-										output.write("INSERT INTO continent VALUES (" + stringOrNull(m.get(i).name) + "," + numOrNull(m.get(i).area) +");\n" );
-									}
-							output.write("\nCOMMIT;\n\n\n");
-							output.close();
-							System.out.println("Appended continent table successfully");
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					} else{
-						System.out.println("Could not append continent table to file.");
-					}
-				}
+    // Insert continent
+    public void insertContinent(ArrayList<Continent> m){
+        File f = new File("countries.sql");
+        // does file exist? append if yes, else print no
+        if(f.exists()){
+            try{
+                output = new BufferedWriter(new FileWriter(f, true));
+                // insert continent values
+
+                for(int i = 0; i < m.size(); i++){
+                            output.write("INSERT INTO continent VALUES (" + stringOrNull(m.get(i).name) + "," + numOrNull(m.get(i).area) +");\n" );
+                        }
+                output.write("\nCOMMIT;\n\n\n");
+                output.close();
+                System.out.println("Appended continent table successfully");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else{
+            System.out.println("Could not append continent table to file.");
+        }
+    }
 				
 	public void insertProvince(ArrayList<Country> m){
 		File f = new File("countries.sql");
@@ -527,9 +527,9 @@ public class Main {
 							}	
 						}
 					}
-				
-				
-				
+
+
+                output.write("\nCOMMIT;\n\n\n");
 				System.out.println("Successfuly appended province table to file");
 				output.close();
 			} catch (IOException e) {
@@ -540,6 +540,34 @@ public class Main {
 		}
 		
 	}
+
+    // Insert organization
+    public void insertOrganization(ArrayList<Organization> m){
+        File f = new File("countries.sql");
+        // does file exist? append if yes, else print no
+        if(f.exists()){
+            try{
+                output = new BufferedWriter(new FileWriter(f, true));
+                // insert Organization values
+
+                for(int i = 0; i < m.size(); i++){
+                    output.write("INSERT INTO organization VALUES (" + stringOrNull(m.get(i).abbrev)
+                            + "," + stringOrNull(m.get(i).name)
+                            + "," + stringOrNull(m.get(i).headq)
+                            + "," + "NULL"
+                            + "," + "NULL"
+                            + "," + stringOrNull(m.get(i).established) +");\n" );
+                }
+                output.write("\nCOMMIT;\n\n\n");
+                output.close();
+                System.out.println("Appended organization table successfully");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else{
+            System.out.println("Could not append organization table to file.");
+        }
+    }
 
 
 	/* This checks if there is a String or if it contains NULL
