@@ -68,6 +68,7 @@ public class Main {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+           
             m.insertCountry(country); //done
             m.insertPopulation(country); // done
             m.insertPolitics(country); // done
@@ -83,7 +84,7 @@ public class Main {
             m.insertOrganization(organization);
             m.insertIsMember(organization); //done
             m.insertSea(sea); 	// done
-            m.insertRiver(river);// river
+            m.insertRiver(river);// done
             // riverthrough
             // lake
             // island
@@ -123,13 +124,15 @@ public class Main {
 									+ stringOrNull(flows_to_l) + "," + stringOrNull(flows_to_s) + ","
 									+ numOrNull(r.length) + "," 
 									+ "GeoCoord(" + r.source.longitude + "," 
-									+ r.source.latitude + ")," + numOrNull(r.source.elevation) + ","
+									+ r.source.latitude + "),"
+									+ stringOrNull(r.source.mountains) +  "," 
+									+ numOrNull(r.source.elevation) + ","
 									+ "GeoCoord(" + r.estuary.longitude + "," + r.estuary.latitude 
 									 + "));\n" );
 						
 						
-					}
-				
+					
+				}
 				output.write("\nCOMMIT;\n\n\n");
 				output.close();
 				System.out.println("Appended river table successfully");

@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
+
 public class Source {
 	// Single Elements
 	
@@ -17,17 +18,11 @@ public class Source {
 	// class elements 
 	ArrayList<Located> located;
 	ArrayList<From> from;
+
 	
-	public Source(){
-	}
 	// set and get sing tag element
-	@XmlElement
-	public String geMountains(){
-		return mountains;
-	}
-	public void setMountains(String mountains){
-		this.mountains = mountains;
-	}
+	
+	
 	
 	@XmlElement
 	public String getElevation(){
@@ -38,17 +33,26 @@ public class Source {
 	}
 	
 	@XmlElement
+	public String getMountains(){
+		return mountains;
+	}
+	public void setMountains(String mountains){
+		this.mountains = mountains;
+	}
+	
 	public String getLongitude(){
 		return longitude;
 	}
+	@XmlElement
 	public void setLongitude(String longitude){
 		this.longitude = longitude;
 	}
 	
-	@XmlElement
+	
 	public String getLatitude(){
 		return latitude;
 	}
+	@XmlElement
 	public void setLatitude(String latitude){
 		this.latitude = latitude;
 	}

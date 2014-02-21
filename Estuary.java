@@ -12,7 +12,7 @@ public class Estuary {
 	ArrayList<Located> located;
 	
 	@XmlElement
-	public String getLatitue(){
+	public String getLatitude(){
 		return latitude;
 	}
 	public void setLatitude(String latitude){
