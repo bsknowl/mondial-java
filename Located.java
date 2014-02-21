@@ -2,7 +2,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 public class Located {
 
-	// Attributes array with delimiters needs parsing
+	
 	String country;
 	String province;
 	
@@ -21,4 +21,7 @@ public class Located {
 	public void setProvince(String province){
 		this.province = province;
 	}
+	
+	
+	
 }

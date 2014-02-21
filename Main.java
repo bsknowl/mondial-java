@@ -29,6 +29,7 @@ public class Main {
             ArrayList<Sea> sea = mondial.sea;
             ArrayList<River> river = mondial.river;
             ArrayList<Mountain> mountain = mondial.mountain;
+            ArrayList<Lake> lake = mondial.lake;
             
             System.out.println("Name: " + country.get(0).name);
             System.out.println("Code: " + country.get(0).code);
@@ -86,15 +87,13 @@ public class Main {
             m.insertSea(sea); 	// done
             m.insertRiver(river);// done
             m.insertRiverThrough(river); // done
-            // lake
+            m.insertLake(lake); // done
             // island
             // mountain 
             // desert
             // geo_sea?
             // to be continued
             // ...
-
-            m.insertMountainOnIsland(mountain);
             
             
 		} catch (JAXBException e) {
@@ -102,6 +101,37 @@ public class Main {
 		}
 	}
 	
+	private void insertLake(ArrayList<Lake> lake) {
+		File f = new File("countries.sql");
+		// does file exist? append if yes, else print no
+		if(f.exists()){
+			try{
+				output = new BufferedWriter(new FileWriter(f, true));
+				// insert lake values
+				
+				for(Lake l : lake){
+					String flows = flowsTo(l.to, "river");
+							output.write("INSERT INTO lake VALUES ("
+									+ stringOrNull(l.name) + ","
+									+ numOrNull(l.area) + ","
+									+ numOrNull(l.depth) + ","
+									+ numOrNull(l.elevation) + ","
+									+ stringOrNull(l.type) + ","
+									+ stringOrNull(flows) + "GeoCoord(" + numOrNull(l.longitude)
+									+ "," + numOrNull(l.latitude) + ")" +
+											");\n" );
+				}
+				output.close();
+				commit("riverthrough and lake");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else{
+			System.out.println("Could not append river table to file.");
+		}
+	
+	}
+
 		/** THIS INSERTS INTO riverThrough(River, Lake) **/
 		private void insertRiverThrough(ArrayList<River> river) {
 			File f = new File("countries.sql");
@@ -120,14 +150,9 @@ public class Main {
 												");\n" );
 							}
 						}
-								
-							
-							
-						
 					}
-					output.write("\nCOMMIT;\n\n\n");
 					output.close();
-					System.out.println("Appended riverThrough table successfully");
+					// gets done after lake commit("riverthrough");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -168,9 +193,9 @@ public class Main {
 						
 					
 				}
-				output.write("\nCOMMIT;\n\n\n");
+				
 				output.close();
-				System.out.println("Appended river table successfully");
+				commit("river");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -215,9 +240,8 @@ public class Main {
 						
 					}
 				
-				output.write("\nCOMMIT;\n\n\n");
 				output.close();
-				System.out.println("Appended sea table successfully");
+				commit("sea");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -251,9 +275,9 @@ public class Main {
 						}
 					}
 				}
-				output.write("\nCOMMIT;\n\n\n");
+				
 				output.close();
-				System.out.println("Appended isMember table successfully");
+				commit("isMember");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -292,9 +316,9 @@ public class Main {
 							
 					}
 				}
-				output.write("\nCOMMIT;\n\n\n");
+				
 				output.close();
-				System.out.println("Appended encompasses table successfully");
+				commit("encompasses");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -324,9 +348,8 @@ public class Main {
 							
 					}
 				}
-				output.write("\nCOMMIT;\n\n\n");
 				output.close();
-				System.out.println("Appended borders table successfully");
+				commit("borders");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -374,9 +397,9 @@ public class Main {
 							+ "," + numOrNull(m.get(i).population) + ");\n");
 				}
 			}
-			output.write("\n\nCOMMIT;\n\n\n");
 			output.close();
-			System.out.println("File written to successfully\n" + "Appended countries table");
+			System.out.println("File written to successfully\n");
+			commit("countries");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -440,9 +463,8 @@ public class Main {
 						}
 					}
 				}
-				output.write("\nCOMMIT;\n\n");
 				output.close();
-				System.out.println("Appended cities successfully");
+				commit("cities");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -462,9 +484,8 @@ public class Main {
 					output.write("INSERT INTO population VALUES (" + stringOrNull(m.get(i).code) + ","
 							+ numOrNull(m.get(i).popGrowth) + "," + numOrNull(m.get(i).infant) +");\n");
 				}
-				output.write("\nCOMMIT;\n\n\n");
 				output.close();
-				System.out.println("Appended population table successfully");
+				commit("population");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -504,9 +525,8 @@ public class Main {
 							+ stringOrNull(dependent) + "," + stringOrNull(m.get(i).government)
 							+");\n");
 				}
-				output.write("\nCOMMIT;\n\n\n");
 				output.close();
-				System.out.println("Appended politics table successfully");
+				commit("politics");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -528,9 +548,8 @@ public class Main {
 							+ "," + numOrNull(m.get(i).gdpAgri) + "," + numOrNull(m.get(i).gdpInd) + "," + numOrNull(m.get(i).gdpServ) 
 							+ "," + numOrNull(m.get(i).inflation) + ");\n");
 				}
-				output.write("\nCOMMIT;\n\n\n");
 				output.close();
-				System.out.println("Appended economy table successfully");
+				commit("economy");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -558,9 +577,8 @@ public class Main {
 					}
 					
 				}
-				output.write("\nCOMMIT;\n\n\n");
 				output.close();
-				System.out.println("Appended language table successfully");
+				commit("language");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -588,9 +606,8 @@ public class Main {
 						}
 					}
 				}
-				output.write("\nCOMMIT;\n\n\n");
 				output.close();
-				System.out.println("Appended ethnicgroup table successfully");
+				commit("ethnicgroup");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -617,9 +634,8 @@ public class Main {
                         }
                     }
                 }
-                output.write("\nCOMMIT;\n\n\n");
                 output.close();
-                System.out.println("Appended religion table successfully");
+                commit("religion");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -641,9 +657,8 @@ public class Main {
                 for(int i = 0; i < m.size(); i++){
                             output.write("INSERT INTO continent VALUES (" + stringOrNull(m.get(i).name) + "," + numOrNull(m.get(i).area) +");\n" );
                         }
-                output.write("\nCOMMIT;\n\n\n");
                 output.close();
-                System.out.println("Appended continent table successfully");
+                commit("continent");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -706,9 +721,8 @@ public class Main {
 					}
 
 
-                output.write("\nCOMMIT;\n\n\n");
-				System.out.println("Successfuly appended province table to file");
 				output.close();
+				commit("province");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -735,40 +749,13 @@ public class Main {
                             + "," + "NULL"
                             + "," + stringOrNull(m.get(i).established) +");\n" );
                 }
-                output.write("\nCOMMIT;\n\n\n");
                 output.close();
-                System.out.println("Appended organization table successfully");
+                commit("organization");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else{
             System.out.println("Could not append organization table to file.");
-        }
-    }
-
-    // Insert mountain
-    public void insertMountainOnIsland(ArrayList<Mountain> m){
-        File f = new File("countries.sql");
-        // does file exist? append if yes, else print no
-        if(f.exists()){
-            try{
-                output = new BufferedWriter(new FileWriter(f, true));
-
-                // insert mountainOnIsland values
-                for(int i = 0; i < m.size(); i++){
-                    if(m.get(i).getIsland() != null){
-                        output.write("INSERT INTO mountainOnIsland VALUES (" + stringOrNull(m.get(i).getName())
-                                + "," + stringOrNull(m.get(i).getIsland()) +");\n" );
-                    }
-                }
-                output.write("\nCOMMIT;\n\n\n");
-                output.close();
-                System.out.println("Appended mountainOnIsland table successfully");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else{
-            System.out.println("Could not append mountainOnIsland table to file.");
         }
     }
 
@@ -807,5 +794,26 @@ public class Main {
 		return t;
 	}
 
+	/* Appends Commit when wanting to
+	 * Make sure to put in the tables as a string 
+	 * for what you want to be output onto screen
+	 */
+	private void commit(String s){
+		File f = new File("countries.sql");
+		if(f.exists()){
+			try{
+				output = new BufferedWriter(new FileWriter(f, true));
+				output.write("\nCOMMIT;\n\n\n");
+				output.close();
+				System.out.println("Appended " + s + " table successfully.");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else{
+			System.out.println("Could not add commit to file");
+		}
+				
+	}
+	
 	
 }
