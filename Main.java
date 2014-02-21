@@ -54,6 +54,16 @@ public class Main {
             		+ country.get(1).getProvince().get(0).getCity().get(0).name);
          
             // Insert Statements
+            File f = new File("countries.sql");
+            // If file exists just write over it, else create new file and write to it.
+            try {
+                f.createNewFile();
+                BufferedWriter output = new BufferedWriter(new FileWriter(f));
+                output.write("\nALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD';\n");
+                output.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             m.insertCountry(country); //done
             m.insertPopulation(country); // done
             m.insertPolitics(country); // done
@@ -152,17 +162,9 @@ public class Main {
 	public void insertCountry(ArrayList<Country> m){
 		File f = new File("countries.sql");
 		String country_cap = "";
-		// If file exists just write over it, else create new file and write to it.
-		if(!f.exists()){
-			try {
-				f.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 		// new Buffered output and loop for the Insert statements
 		try {
-			output = new BufferedWriter(new FileWriter(f));
+			output = new BufferedWriter(new FileWriter(f, true));
 			for(int i = 0; i < m.size(); i++){
 				//enter if a province exists
 				
@@ -181,13 +183,13 @@ public class Main {
 						}
 					}
 					
-					output.write("INSERT INTO Country VALUES (" + stringOrNull(m.get(i).name) 
+					output.write("INSERT INTO country VALUES (" + stringOrNull(m.get(i).name)
 							+ "," + stringOrNull(m.get(i).code) + "," + stringOrNull(m.get(i).capital) 
 							+ "," + stringOrNull(country_cap) + "," + numOrNull(m.get(i).area) 
 							+ "," + numOrNull(m.get(i).population) + ");\n");
 				} else{
 					//enter null if no province exists
-					output.write("INSERT INTO Country VALUES (" + "" + stringOrNull(m.get(i).name) 
+					output.write("INSERT INTO country VALUES (" + "" + stringOrNull(m.get(i).name)
 							+ "," + stringOrNull(m.get(i).code) + "," + stringOrNull(m.get(i).capital) 
 							+ "," + stringOrNull(m.get(i).name) + "," + numOrNull(m.get(i).area) 
 							+ "," + numOrNull(m.get(i).population) + ");\n");
