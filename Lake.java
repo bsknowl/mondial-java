@@ -3,16 +3,12 @@ import java.util.ArrayList;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
-public class Lake {
+public class Lake extends Elements{
 
 	
 	// Elements
-	String name;
-	String area;
+	
 	String elevation;
-	String depth;
-	String longitude;
-	String latitude;
 	
 	// Attributes
 	String id;
@@ -23,22 +19,11 @@ public class Lake {
 	ArrayList<Located> located;
 	To to;
 	
+	public Lake(){
+		super();
+	}
 	// Element get and set
-		@XmlElement
-		public String getName(){
-			return name;
-		}
-		public void setName(String name){
-			this.name = name;
-		}
 		
-		@XmlElement
-		public String getArea(){
-			return area;
-		}
-		public void setArea(String area){
-			this.area = area;
-		}
 		
 		@XmlElement
 		public String getElevation(){
@@ -48,29 +33,6 @@ public class Lake {
 			this.elevation = elevation;
 		}
 		
-		@XmlElement
-		public String getDepth(){
-			return depth;
-		}
-		public void setDepth(String depth){
-			this.depth = depth;
-		}
-	
-		public String getLongitude(){
-			return longitude;
-		}
-		@XmlElement
-		public void setLongitude(String longitude){
-			this.longitude = longitude;
-		}
-		
-		public String getLatitude(){
-			return latitude;
-		}
-		@XmlElement
-		public void setLatitude(String latitude){
-			this.latitude = latitude;
-		}
 		
 		
 	// Attributes get and set

@@ -4,13 +4,11 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 
-public class Source {
+public class Source extends Elements{
 	// Single Elements
 	
 	String mountains; // from mountains
 	String elevation;
-	String longitude;
-	String latitude;
 	
 	// Attributes
 	String country; // code
@@ -22,7 +20,9 @@ public class Source {
 	
 	// set and get sing tag element
 	
-	
+	public Source(){
+		super();
+	}
 	
 	@XmlElement
 	public String getElevation(){
@@ -39,23 +39,7 @@ public class Source {
 	public void setMountains(String mountains){
 		this.mountains = mountains;
 	}
-	
-	public String getLongitude(){
-		return longitude;
-	}
-	@XmlElement
-	public void setLongitude(String longitude){
-		this.longitude = longitude;
-	}
-	
-	
-	public String getLatitude(){
-		return latitude;
-	}
-	@XmlElement
-	public void setLatitude(String latitude){
-		this.latitude = latitude;
-	}
+
 	
 	// set attribute
 	@XmlAttribute
