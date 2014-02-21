@@ -20,11 +20,13 @@ public class Source {
 	
 	public Source(){
 	}
+	
 	// set and get sing tag element
-	@XmlElement
+	
 	public String geMountains(){
 		return mountains;
 	}
+	
 	public void setMountains(String mountains){
 		this.mountains = mountains;
 	}
@@ -37,18 +39,20 @@ public class Source {
 		this.elevation = elevation;
 	}
 	
-	@XmlElement
+	
 	public String getLongitude(){
 		return longitude;
 	}
+	@XmlElement
 	public void setLongitude(String longitude){
 		this.longitude = longitude;
 	}
 	
-	@XmlElement
+	
 	public String getLatitude(){
 		return latitude;
 	}
+	@XmlElement
 	public void setLatitude(String latitude){
 		this.latitude = latitude;
 	}
