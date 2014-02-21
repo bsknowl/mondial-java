@@ -93,6 +93,8 @@ public class Main {
             // geo_sea?
             // to be continued
             // ...
+
+            m.insertMountainOnIsland(mountain);
             
             
 		} catch (JAXBException e) {
@@ -741,6 +743,32 @@ public class Main {
             }
         } else{
             System.out.println("Could not append organization table to file.");
+        }
+    }
+
+    // Insert mountain
+    public void insertMountainOnIsland(ArrayList<Mountain> m){
+        File f = new File("countries.sql");
+        // does file exist? append if yes, else print no
+        if(f.exists()){
+            try{
+                output = new BufferedWriter(new FileWriter(f, true));
+
+                // insert mountainOnIsland values
+                for(int i = 0; i < m.size(); i++){
+                    if(m.get(i).getIsland() != null){
+                        output.write("INSERT INTO mountainOnIsland VALUES (" + stringOrNull(m.get(i).getName())
+                                + "," + stringOrNull(m.get(i).getIsland()) +");\n" );
+                    }
+                }
+                output.write("\nCOMMIT;\n\n\n");
+                output.close();
+                System.out.println("Appended mountainOnIsland table successfully");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else{
+            System.out.println("Could not append mountainOnIsland table to file.");
         }
     }
 
