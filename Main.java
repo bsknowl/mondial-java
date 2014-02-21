@@ -85,7 +85,7 @@ public class Main {
             m.insertIsMember(organization); //done
             m.insertSea(sea); 	// done
             m.insertRiver(river);// done
-            // riverthrough
+            m.insertRiverThrough(river); // done
             // lake
             // island
             // mountain 
@@ -100,6 +100,41 @@ public class Main {
 		}
 	}
 	
+		/** THIS INSERTS INTO riverThrough(River, Lake) **/
+		private void insertRiverThrough(ArrayList<River> river) {
+			File f = new File("countries.sql");
+			// does file exist? append if yes, else print no
+			if(f.exists()){
+				try{
+					output = new BufferedWriter(new FileWriter(f, true));
+					// insert riverThrough values
+					
+					for(River r : river){
+						if(r.through != null){
+							for (Through t : r.through){
+								output.write("INSERT INTO riverthrough VALUES ("
+										+ stringOrNull(r.name) + ","
+										 + stringOrNull(t.lake) +
+												");\n" );
+							}
+						}
+								
+							
+							
+						
+					}
+					output.write("\nCOMMIT;\n\n\n");
+					output.close();
+					System.out.println("Appended riverThrough table successfully");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else{
+				System.out.println("Could not append river table to file.");
+			}
+		
+	}
+
 		/*** THIS INSERTS INTO river TABLE river(name, river, lake, sea, length, sourceGeoCoord, mountains
 	 * source elevation, estuaryGeoCoord)
 	 * @param river
