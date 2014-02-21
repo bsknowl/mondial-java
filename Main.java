@@ -84,7 +84,7 @@ public class Main {
             m.insertOrganization(organization);
             m.insertIsMember(organization); //done
             m.insertSea(sea); 	// done
-            m.insertRiver(river);// river
+            m.insertRiver(river);// done
             // riverthrough
             // lake
             // island
@@ -123,7 +123,7 @@ public class Main {
 									+ numOrNull(r.length) + "," 
 									+ "GeoCoord(" + r.source.longitude + "," 
 									+ r.source.latitude + "),"
-									+ "MOUNTAINS" +  "," 
+									+ stringOrNull(r.source.mountains) +  "," 
 									+ numOrNull(r.source.elevation) + ","
 									+ "GeoCoord(" + r.estuary.longitude + "," + r.estuary.latitude 
 									 + "));\n" );
