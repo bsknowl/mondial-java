@@ -13,7 +13,7 @@ public class Main {
 
 	private BufferedWriter output;
 	private double d;
-	private Boolean flag;
+	
 	public static void main(String[] args) {
 		try{
 			Main m = new Main();
@@ -94,14 +94,14 @@ public class Main {
             m.insertIsland(island); // done
             m.insertMountain(mountain); // done 
             m.insertDesert(desert); // done
-            m.insertGeoSea(sea, country); // done
-            m.insertGeoRiver(river, country); // done? off by count of ~74 entries
-            m.insertGeoSource(river, country); // done off by count of ~5 entries 
-            m.insertGeoEstuary(river, country); // done off by count ~16 entries
-            m.insertGeoLake(lake, country); // geo_lake
-            // geo_island
-            // geo_mountain
-            // geo_desert
+            m.insertGeoSea(sea, country); // done over by 2 entries (prob good)
+            m.insertGeoRiver(river, country); // done
+            m.insertGeoSource(river, country); // done off by count of ~5 entries (idk yet)
+            m.insertGeoEstuary(river, country); // done off by count ~16 entries (some not in xml)
+            m.insertGeoLake(lake, country); // done
+            m.insertGeoIsland(island, country); // done
+            m.insertGeoMountain(mountain, country); // done off by count ~2 (under)
+            m.insertGeoDesert(desert, country); // geo_desert
             // mergeswith
             // located
             // locatedOn
@@ -115,8 +115,362 @@ public class Main {
 		}
 	}
 	
+	private void insertGeoDesert(ArrayList<Desert> desert, ArrayList<Country> country) {
+		String name = null;
+		String prov = null;
+		Boolean flag = false;
+		File f = new File("countries.sql");
+		// does file exist? append if yes, else print no
+		if(f.exists()){
+			try{
+				output = new BufferedWriter(new FileWriter(f, true));
+				// insert geo_estuary values
+				
+				// This inserts if no province exists
+				for(Desert des : desert){
+					if(des.getLocated() == null){
+				//		System.out.println("null: " + r.getName());
+						name = des.getName();
+						String[] coun_temp = getStrings(des.getCountry());
+						for(int i = 0; i < coun_temp.length; i++){
+							for(Country c : country){
+								if (c.getCode().compareToIgnoreCase(coun_temp[i]) == 0){
+									prov = c.getName();
+									output.write("INSERT INTO geo_desert VALUES ("
+											+ stringOrNull(name) + ","
+											+ stringOrNull(coun_temp[i]) + ","
+											+ stringOrNull(prov)
+											+ ");\n" );
+								}
+								
+							}
+						}
+						
+					}else{
+						// inserts geo_lake if province exists
+						
+							name = des.getName();
+							String[] countries = getStrings(des.getCountry());
+							for(int i = 0; i < countries.length; i++){
+								for(Located loc : des.getLocated()){
+									if(countries[i].compareToIgnoreCase(loc.getCountry()) == 0){
+										
+										flag = true;
+										String[] provs = getStrings(loc.getProvince());
+										
+										for(int j = 0; j < provs.length; j++){
+											
+											prov = compareProv(provs[j], country);
+											output.write("INSERT INTO geo_desert VALUES ("
+													+ stringOrNull(des.getName()) + ","
+													+ stringOrNull(loc.getCountry()) + ","
+													+ stringOrNull(prov)
+													+ ");\n" );
+											
+										}
+										break;
+									} else {flag = false; }			
+								}
+								// if flag is false, country doesn't have a province and get name 
+								// of country instead
+								if(flag == false){
+									for(Country c : country){
+										if(countries[i].compareToIgnoreCase(c.getCode()) == 0){
+										
+											prov = c.getName();
+											output.write("INSERT INTO geo_desert VALUES ("
+													+ stringOrNull(des.getName()) + ","
+													+ stringOrNull(countries[i]) + ","
+													+ stringOrNull(prov)
+													+ ");\n" );
+										}
+									}
+									
+								}
+
+									}	
+								}
+							}
+								
+			
+				output.close();
+				commit("geo_sea and geo_river and geo_source \nand geo_estuary and geo_lake and geo_island"
+						+ "\nand geo_mountain and geo_desert");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else{
+			System.out.println("Could not append geo_desert table to file.");
+		}
+		
+	}
+
+	private void insertGeoMountain(ArrayList<Mountain> mountain, ArrayList<Country> country) {
+		String name = null;
+		String prov = null;
+		Boolean flag = false;
+		File f = new File("countries.sql");
+		// does file exist? append if yes, else print no
+		if(f.exists()){
+			try{
+				output = new BufferedWriter(new FileWriter(f, true));
+				// insert geo_estuary values
+				
+				// This inserts if no province exists
+				for(Mountain mount : mountain){
+					if(mount.getLocated() == null){
+				//		System.out.println("null: " + r.getName());
+						name = mount.getName();
+						String[] coun_temp = getStrings(mount.getCountry());
+						for(int i = 0; i < coun_temp.length; i++){
+							for(Country c : country){
+								if (c.getCode().compareToIgnoreCase(coun_temp[i]) == 0){
+									prov = c.getName();
+									output.write("INSERT INTO geo_mountain VALUES ("
+											+ stringOrNull(name) + ","
+											+ stringOrNull(coun_temp[i]) + ","
+											+ stringOrNull(prov)
+											+ ");\n" );
+								}
+								
+							}
+						}
+						
+					}else{
+						// inserts geo_lake if province exists
+						
+							name = mount.getName();
+							String[] countries = getStrings(mount.getCountry());
+							for(int i = 0; i < countries.length; i++){
+								for(Located loc : mount.getLocated()){
+									if(countries[i].compareToIgnoreCase(loc.getCountry()) == 0){
+										
+										flag = true;
+										String[] provs = getStrings(loc.getProvince());
+										
+										for(int j = 0; j < provs.length; j++){
+											
+											prov = compareProv(provs[j], country);
+											output.write("INSERT INTO geo_mountain VALUES ("
+													+ stringOrNull(mount.getName()) + ","
+													+ stringOrNull(loc.getCountry()) + ","
+													+ stringOrNull(prov)
+													+ ");\n" );
+											
+										}
+										break;
+									} else {flag = false; }			
+								}
+								// if flag is false, country doesn't have a province and get name 
+								// of country instead
+								if(flag == false){
+									for(Country c : country){
+										if(countries[i].compareToIgnoreCase(c.getCode()) == 0){
+										
+											prov = c.getName();
+											output.write("INSERT INTO geo_mountain VALUES ("
+													+ stringOrNull(mount.getName()) + ","
+													+ stringOrNull(countries[i]) + ","
+													+ stringOrNull(prov)
+													+ ");\n" );
+										}
+									}
+									
+								}
+
+									}	
+								}
+							}
+								
+			
+				output.close();
+			//	commit("geo_sea and geo_river and geo_source \nand geo_estuary and geo_lake and geo_island"
+			//			+ "\nand geo_mountain");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else{
+			System.out.println("Could not append geo_mountain table to file.");
+		}
+		
+	}
+
+	private void insertGeoIsland(ArrayList<Island> island, ArrayList<Country> country) {
+		String name = null;
+		String prov = null;
+		Boolean flag = false;
+		File f = new File("countries.sql");
+		// does file exist? append if yes, else print no
+		if(f.exists()){
+			try{
+				output = new BufferedWriter(new FileWriter(f, true));
+				// insert geo_estuary values
+				
+				// This inserts if no province exists
+				for(Island isle : island){
+					if(isle.getLocated() == null){
+				//		System.out.println("null: " + r.getName());
+						name = isle.getName();
+						String[] coun_temp = getStrings(isle.getCountry());
+						for(int i = 0; i < coun_temp.length; i++){
+							for(Country c : country){
+								if (c.getCode().compareToIgnoreCase(coun_temp[i]) == 0){
+									prov = c.getName();
+									output.write("INSERT INTO geo_island VALUES ("
+											+ stringOrNull(name) + ","
+											+ stringOrNull(coun_temp[i]) + ","
+											+ stringOrNull(prov)
+											+ ");\n" );
+								}
+								
+							}
+						}
+						
+					}else{
+						// inserts geo_lake if province exists
+						
+							name = isle.getName();
+							String[] countries = getStrings(isle.getCountry());
+							for(int i = 0; i < countries.length; i++){
+								for(Located loc : isle.getLocated()){
+									if(countries[i].compareToIgnoreCase(loc.getCountry()) == 0){
+										
+										flag = true;
+										String[] provs = getStrings(loc.getProvince());
+										
+										for(int j = 0; j < provs.length; j++){
+											
+											prov = compareProv(provs[j], country);
+											output.write("INSERT INTO geo_island VALUES ("
+													+ stringOrNull(isle.getName()) + ","
+													+ stringOrNull(loc.getCountry()) + ","
+													+ stringOrNull(prov)
+													+ ");\n" );
+											
+										}
+										break;
+									} else {flag = false; }			
+								}
+								// if flag is false, country doesn't have a province and get name 
+								// of country instead
+								if(flag == false){
+									for(Country c : country){
+										if(countries[i].compareToIgnoreCase(c.getCode()) == 0){
+										
+											prov = c.getName();
+											output.write("INSERT INTO geo_island VALUES ("
+													+ stringOrNull(isle.getName()) + ","
+													+ stringOrNull(countries[i]) + ","
+													+ stringOrNull(prov)
+													+ ");\n" );
+										}
+									}
+									
+								}
+
+									}	
+								}
+							}
+								
+			
+				output.close();
+				//commit("geo_sea and geo_river and geo_source and geo_estuary and geo_lake and geo_island");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else{
+			System.out.println("Could not append geo_island table to file.");
+		}
+		
+	}
+
+	/* Insert into geo_lake(Lake, country_code, province) */
 	private void insertGeoLake(ArrayList<Lake> lake, ArrayList<Country> country) {
-		// TODO Auto-generated method stub
+		String name = null;
+		String prov = null;
+		Boolean flag = false;
+		File f = new File("countries.sql");
+		// does file exist? append if yes, else print no
+		if(f.exists()){
+			try{
+				output = new BufferedWriter(new FileWriter(f, true));
+				// insert geo_estuary values
+				
+				// This inserts if no province exists
+				for(Lake l : lake){
+					if(l.getLocated() == null){
+				//		System.out.println("null: " + r.getName());
+						name = l.getName();
+						String[] coun_temp = getStrings(l.getCountry());
+						for(int i = 0; i < coun_temp.length; i++){
+							for(Country c : country){
+								if (c.getCode().compareToIgnoreCase(coun_temp[i]) == 0){
+									prov = c.getName();
+									output.write("INSERT INTO geo_lake VALUES ("
+											+ stringOrNull(name) + ","
+											+ stringOrNull(coun_temp[i]) + ","
+											+ stringOrNull(prov)
+											+ ");\n" );
+								}
+								
+							}
+						}
+						
+					}else{
+						// inserts geo_lake if province exists
+						
+							name = l.getName();
+							String[] countries = getStrings(l.getCountry());
+							for(int i = 0; i < countries.length; i++){
+								for(Located loc : l.getLocated()){
+									if(countries[i].compareToIgnoreCase(loc.getCountry()) == 0){
+										
+										flag = true;
+										String[] provs = getStrings(loc.getProvince());
+										
+										for(int j = 0; j < provs.length; j++){
+											
+											prov = compareProv(provs[j], country);
+											output.write("INSERT INTO geo_lake VALUES ("
+													+ stringOrNull(l.getName()) + ","
+													+ stringOrNull(loc.getCountry()) + ","
+													+ stringOrNull(prov)
+													+ ");\n" );
+											
+										}
+										break;
+									} else {flag = false; }			
+								}
+								// if flag is false, country doesn't have a province and get name 
+								// of country instead
+								if(flag == false){
+									for(Country c : country){
+										if(countries[i].compareToIgnoreCase(c.getCode()) == 0){
+										
+											prov = c.getName();
+											output.write("INSERT INTO geo_lake VALUES ("
+													+ stringOrNull(l.getName()) + ","
+													+ stringOrNull(countries[i]) + ","
+													+ stringOrNull(prov)
+													+ ");\n" );
+										}
+									}
+									
+								}
+
+									}	
+								}
+							}
+								
+			
+				output.close();
+				//commit("geo_sea and geo_river and geo_source and geo_estuary and geo_lake");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else{
+			System.out.println("Could not append geo_lake table to file.");
+		}
 		
 	}
 
@@ -179,7 +533,7 @@ public class Main {
 							
 				}
 				output.close();
-				commit("geo_sea and geo_river and geo_source and geo_estuary");
+			//	commit("geo_sea and geo_river and geo_source and geo_estuary");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -260,8 +614,7 @@ public class Main {
 
 	/* Insert into geo_river(River, country, province) */
 	private void insertGeoRiver(ArrayList<River> river, ArrayList<Country> country) {
-		String name = null;
-		String coun = null;
+		Boolean flag = false;
 		String prov = null;
 		File f = new File("countries.sql");
 		// does file exist? append if yes, else print no
@@ -270,51 +623,75 @@ public class Main {
 				output = new BufferedWriter(new FileWriter(f, true));
 				// insert geo_river values
 				
-				// This inserts if no province exists
-				for(River r : river){
-					if(r.getLocated() == null){
-					//	System.out.println("null: " + r.getName());
-						name = r.getName();
-						coun = r.getCountry();
-						for(Country c : country){
-							if (c.getCode().compareToIgnoreCase(coun) == 0){
-								prov = c.getName();
-								output.write("INSERT INTO geo_river VALUES ("
-										+ stringOrNull(name) + ","
-										+ stringOrNull(coun) + ","
-										+ stringOrNull(prov)
-										+ ");\n" );
+				// loop through 
+				for(River s : river){
+					if(s.getLocated() != null){
+						/* get the country code from the sea country attr
+						 * loop through each code to get province name 
+						 * or country name
+						 */
+						String river_country = s.getCountry();
+						String[] countries = getStrings(river_country);
+						
+						for(int i = 0; i < countries.length; i++){
+							
+							for(Located l : s.getLocated()){
+								
+								if(countries[i].compareToIgnoreCase(l.getCountry()) == 0){
+									
+									flag = true;
+									// get the provinces from located
+									String[] loc_prov = getStrings(l.getProvince());
+									// loop through province name and get province name that match
+									for(int j = 0; j < loc_prov.length; j++){
+										// get the province name 
+										prov = compareProv(loc_prov[j], country);
+										output.write("INSERT INTO geo_river VALUES ("
+												+ stringOrNull(s.getName()) + ","
+												+ stringOrNull(l.getCountry()) + ","
+												+ stringOrNull(prov)
+												+ ");\n" );
+										
+									}
+									break;
+								} else {flag = false; }			
+							}
+							// if flag is false, country doesn't have a province and get name 
+							// of country instead
+							if(flag == false){
+								for(Country c : country){
+									if(countries[i].compareToIgnoreCase(c.getCode()) == 0){
+									
+										prov = c.getName();
+										output.write("INSERT INTO geo_river VALUES ("
+												+ stringOrNull(s.getName()) + ","
+												+ stringOrNull(countries[i]) + ","
+												+ stringOrNull(prov)
+												+ ");\n" );
+									}
+								}
+								
 							}
 							
 						}
 					}else{
-						// inserts geo_river if province exists
-						for(Located l : r.getLocated()){
-							name = r.getName();
-							coun = l.getCountry();
-							String[] provs = getStrings(l.getProvince());
-							// loops on length of provinces in located
-							// then country to province
-							
-							for(int i = 0; i < provs.length; i++){
-								for(Country c : country){
-									if(c.getProvince() != null){
-										for(Province p : c.getProvince()){
-											if(provs[i].compareToIgnoreCase(p.getId()) == 0){
-												prov = p.getName();
-												output.write("INSERT INTO geo_river VALUES ("
-														+ stringOrNull(name) + ","
-														+ stringOrNull(coun) + ","
-														+ stringOrNull(prov)
-														+ ");\n" );
-											}
-										}
-									}
+						String[] countries = getStrings(s.getCountry());
+						
+						for(int i = 0; i < countries.length; i++){
+							for(Country c : country){
+								if(countries[i].compareToIgnoreCase(c.getCode()) == 0){
+									
+									output.write("INSERT INTO geo_river VALUES ("
+											+ stringOrNull(s.getName()) + ","
+											+ stringOrNull(countries[i]) + ","
+											+ stringOrNull(c.getName())
+											+ ");\n" );
 								}
 							}
-						}
-					}
 							
+						}
+					
+					}
 				}
 				output.close();
 			//	commit("geo_sea and geo_river");
@@ -333,7 +710,7 @@ public class Main {
 	private void insertGeoSea(ArrayList<Sea> sea, ArrayList<Country> country) {
 
 		String prov = "";
-		flag = false; // flag is needed if country is not in located.province
+		Boolean flag = false; // flag is needed if country is not in located.province
 		File f = new File("countries.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){
@@ -392,6 +769,23 @@ public class Main {
 							}
 							
 						}
+					}else{
+						String[] countries = getStrings(s.getCountry());
+						
+						for(int i = 0; i < countries.length; i++){
+							for(Country c : country){
+								if(countries[i].compareToIgnoreCase(c.getCode()) == 0){
+									
+									output.write("INSERT INTO geo_sea VALUES ("
+											+ stringOrNull(s.getName()) + ","
+											+ stringOrNull(countries[i]) + ","
+											+ stringOrNull(c.getName())
+											+ ");\n" );
+								}
+							}
+							
+						}
+					
 					}
 				}
 				output.close();
