@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
-public class Sea {
+public class Sea extends Elements{
 
 	// Elements 
 	String name;  // sea name
@@ -20,28 +20,9 @@ public class Sea {
 	ArrayList<Located> located;	
 	
 	/* Getter and setter for Element tage */
-	@XmlElement
-	public String getName(){
-		return name;
-	}
-	public void setName(String name){
-		this.name = name;
-	}
 	
-	@XmlElement
-	public String getArea(){
-		return area;
-	}
-	public void setArea(String area){
-		this.area = area;
-	}
-	
-	@XmlElement
-	public String getDepth(){
-		return depth;
-	}
-	public void setDepth(String depth){
-		this.depth = depth;
+	public Sea(){
+		super();
 	}
 	
 	/* Getter and setter for attributes */
@@ -77,4 +58,5 @@ public class Sea {
 	public void setLocated(ArrayList<Located> located){
 		this.located = located;
 	}
+
 }

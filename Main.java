@@ -94,6 +94,9 @@ public class Main {
             m.insertIsland(island); // done
             m.insertMountain(mountain); // done 
             m.insertDesert(desert); // done
+            
+            // could have made one method for the geo, but oh well
+            
             m.insertGeoSea(sea, country); // done over by 2 entries (prob good)
             m.insertGeoRiver(river, country); // done
             m.insertGeoSource(river, country); // done off by count of ~5 entries (idk yet)
@@ -101,9 +104,9 @@ public class Main {
             m.insertGeoLake(lake, country); // done
             m.insertGeoIsland(island, country); // done
             m.insertGeoMountain(mountain, country); // done off by count ~2 (under)
-            m.insertGeoDesert(desert, country); // geo_desert
-            // mergeswith
-            // located
+            m.insertGeoDesert(desert, country); // done
+            m.mergesWith(sea);/* Done, count good, but because symmetric it some are off */
+        //    m.located(country, river, lake, sea); // located
             // locatedOn
             // islandIn
             // mountainOnIsland
@@ -115,6 +118,201 @@ public class Main {
 		}
 	}
 	
+	private void located(ArrayList<Country> country, ArrayList<River> river2, ArrayList<Lake> lake2, ArrayList<Sea> sea2) {
+		
+		String river= null, river_name = null;
+		String sea = null, sea_name = null;
+		String lake = null, lake_name = null;
+						// loop over countries then cities/province
+						// check for located_at
+						// get the id from located_at
+						
+						for(Country coun : country){
+							//debug
+							
+							if(coun.getProvince() != null){
+								for(Province pro : coun.getProvince()){
+									if(pro.getCity() != null){
+										for(City cit : pro.getCity()){
+											if(cit.getlocated_at() != null){
+												for(Located_At loc : cit.getlocated_at()){
+													// iterate over river
+													
+													if(loc.getRiver() != null){
+														
+															river = loc.getRiver();
+															for(River riv : river2){
+																if( riv.getId().compareToIgnoreCase(river) == 0){
+																	river_name = riv.getName();
+																	
+																}
+																
+															}
+														
+														
+														break;
+													}
+													if(loc.getSea() != null){
+														
+															sea = loc.getSea();
+															for(Sea s : sea2){
+																if( s.getId().compareToIgnoreCase(sea) == 0){
+																	sea_name = s.getName();
+																	//	insert(cit.getName(), pro.getName(), coun.getCode(), null,null, s.getName());
+																}
+															}
+															
+														
+													}
+													if(loc.getLake() != null){
+													
+															lake = loc.getLake();
+																for(Lake lak : lake2){
+																	if( lak.getId().compareToIgnoreCase(lake) == 0){
+																		lake_name = lak.getName();
+																		//insert(cit.getName(), pro.getName(), coun.getCode(), null,lak.getName(), null);
+																	}
+																}
+														
+													} 
+													
+													insert(cit.getName(), pro.getName(), coun.getCode(), river_name, lake_name, sea_name);
+												}
+											}
+										}
+									}
+								}
+							}else{
+								// no province exists
+							//	System.out.println("country: " + coun.getName());
+								// make sure city exists
+								if(coun.getCity() != null){
+									
+									for(City ci : coun.getCity()){
+									//	System.out.println("city: " + ci.getName());
+										
+										// located_at exists
+										if(ci.getlocated_at() != null){
+										
+											for(Located_At loc : ci.getlocated_at()){
+												// iterate over river
+												//System.out.println("located_at: " + loc.getWaterType());
+												
+												// get river|lake|sea
+												if(loc.getRiver() != null){
+													river = loc.getRiver();
+													for(River riv : river2){
+														if( riv.getId().compareToIgnoreCase(river) == 0){
+															insert(ci.getName(), coun.getName(), coun.getCode(), riv.getName(), null, null);
+														}
+													}
+													
+													
+												}
+												if(loc.getSea() != null){
+													sea = loc.getSea();
+													for(Sea s : sea2){
+														if( s.getId().compareToIgnoreCase(sea) == 0){
+															insert(ci.getName(), coun.getName(), coun.getCode(), null,null, s.getName());
+														}
+													}
+												}
+												if(loc.getLake() != null){
+													lake = loc.getLake();
+													for(Lake lak : lake2){
+														if( lak.getId().compareToIgnoreCase(lake) == 0){
+															insert(ci.getName(), coun.getName(), coun.getCode(), null,lak.getName(), null);
+														}
+													}
+												}
+									}
+								}
+							}
+							
+								}
+							}
+						}
+						
+							
+						
+						commit("located");			
+		
+	}
+
+	private void insert(String name, String name2, String code, String name3,
+			String string, String string2) {
+		File f = new File("countries.sql");
+		// does file exist? append if yes, else print no
+				if(f.exists()){
+					try{
+						
+						output = new BufferedWriter(new FileWriter(f, true));
+						output.write("INSERT INTO located VALUES ("
+								+ stringOrNull(name) + "," + stringOrNull(name2) + ","
+								+ stringOrNull(name3) + "," + stringOrNull(string) + ","
+								+ stringOrNull(string2) + ");\n");
+						output.close();
+						
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+	
+				} else{
+					System.out.println("Could not append located table to file.");
+	
+				}
+		
+	}
+
+	/* Insert into mergesWith(sea1, sea2) */
+	private void mergesWith(ArrayList<Sea> sea) {
+		File f = new File("countries.sql");
+		// does file exist? append if yes, else print no
+				if(f.exists()){
+					try{
+						
+						output = new BufferedWriter(new FileWriter(f, true));
+						
+						// create array of booleans to flag to check
+						// for symmetry
+						boolean[] b = new boolean[sea.size()];
+						for(Sea s : sea){
+							String[] temp = getStrings(s.getBordering());
+							
+							
+							for(int i = 0; i < temp.length; i++){
+								for(Sea s1 : sea){
+									if(temp[i].compareToIgnoreCase(s1.getId()) == 0){
+										// this checks if the sea has already been seen
+										// don't want to go over it twice
+										if(b[sea.indexOf(s1)] == false){
+										output.write("INSERT INTO mergesWith VALUES ("
+												+ stringOrNull(s.getName()) + ","
+												+ stringOrNull(s1.getName()) +
+												");\n");
+										}
+										
+									}
+								}
+								
+									
+								}
+							b[sea.indexOf(s)] = true;
+							}
+					
+						output.close();
+						commit("mergesWith");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+	
+				} else{
+					System.out.println("Could not append mergesWith table to file.");
+	
+				}
+						
+	}
+
 	private void insertGeoDesert(ArrayList<Desert> desert, ArrayList<Country> country) {
 		String name = null;
 		String prov = null;

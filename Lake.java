@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
-public class Lake extends Elements{
+public class Lake extends Sea{
 
 	
 	// Elements
@@ -36,20 +36,7 @@ public class Lake extends Elements{
 		
 		
 	// Attributes get and set
-	@XmlAttribute
-	public String getId(){
-		return id;
-	}
-	public void setId(String id){
-		this.id = id;
-	}
-	@XmlAttribute
-	public String getCountry(){
-		return country;
-	}
-	public void setCountry(String country){
-		this.country = country;
-	}
+
 	@XmlAttribute
 	public String getIsland(){
 		return island;
@@ -73,12 +60,5 @@ public class Lake extends Elements{
 	public void setTo(To to){
 		this.to = to;
 	}
-	@XmlElement
-	public ArrayList<Located> getLocated(){
-		return located;
-	}
-	public void setLocated(ArrayList<Located> located){
-		this.located = located;
-	}
-	
+
 }

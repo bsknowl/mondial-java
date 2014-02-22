@@ -1,19 +1,19 @@
+import java.util.ArrayList;
+
 import javax.xml.bind.annotation.XmlAttribute;
+
 
 import com.sun.xml.internal.txw2.annotation.XmlElement;
 
 public class City {
 
 	String cityId, countryCap, code, name, year, longitude, latitude, population;
+	private String is_state_cap;
+	
+	private ArrayList<Located_At> located_at;
+	private ArrayList<Located_On> located_on;
 	
 	
-	/* NEEDS */
-	// Elevation
-	// located_at (zero or more) array
-	// located_on (zero or more) array
-	/* attributes needed */
-	// is_state_cap
-	// province (idref)
 	public City(){
 		
 	}
@@ -36,6 +36,14 @@ public class City {
 	
 	public void setCountryCap(String countryCap){
 		this.countryCap = countryCap;
+	}
+	
+	@XmlAttribute(name="is_state_cap")
+	public String getIsStateCap(){
+		return is_state_cap;
+	}
+	public void setIsStateCap(String is_state_cap){
+		this.is_state_cap = is_state_cap;
 	}
 	
 	// gets country code
@@ -97,9 +105,20 @@ public class City {
 		this.population = population;
 	}
 	
-	// figure out located_at
-	// e.g. watertype="sea"
 	
-	//figure out located_on
-	//e.g. island="..."
+	public ArrayList<Located_At> getlocated_at(){
+		return located_at;
+	}
+	@XmlElement
+	public void setlocated_at(ArrayList<Located_At> located_at){
+		this.located_at = located_at;
+	}
+	
+	public ArrayList<Located_On> getLocatedOn(){
+		return located_on;
+	}
+	public void setLocatedOn(ArrayList<Located_On> located_on){
+		this.located_on = located_on;
+	}
+	
 }
