@@ -1,4 +1,3 @@
-
 import javax.xml.bind.annotation.XmlAttribute;
 
 import com.sun.xml.internal.txw2.annotation.XmlElement;

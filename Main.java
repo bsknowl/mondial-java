@@ -1,4 +1,3 @@
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -14,6 +13,7 @@ public class Main {
 
 	private BufferedWriter output;
 	private double d;
+	private Boolean flag;
 	public static void main(String[] args) {
 		try{
 			Main m = new Main();
@@ -93,8 +93,8 @@ public class Main {
             m.insertLake(lake); // done
             m.insertIsland(island); // done
             m.insertMountain(mountain); // done 
-            m.insertDesert(desert); // desert
-            // geo_sea?
+            m.insertDesert(desert); // done
+            m.insertGeoSea(sea, country); // geo_sea?
             // to be continued
             // ...
             
@@ -104,8 +104,117 @@ public class Main {
 		}
 	}
 	
+	/** This tokenizes a string based on a space delimiter and returns back array of String */
+	private String[] getStrings(String sea_country) {
+		String delims = " ";
+		return sea_country.split(delims);
+		
+	}
+	
+	/* Insert into geo_sea(sea_name, country_code, province/country name) */
+	private void insertGeoSea(ArrayList<Sea> sea, ArrayList<Country> country) {
+
+		String prov = "";
+		flag = false; // flag is needed if country is not in located.province
+		File f = new File("countries.sql");
+		// does file exist? append if yes, else print no
+		if(f.exists()){
+			try{
+				output = new BufferedWriter(new FileWriter(f, true));
+				// insert geo_sea values
+				
+				// loop through 
+				for(Sea s : sea){
+					if(s.getLocated() != null){
+						/* get the country code from the sea country attr
+						 * loop through each code to get province name 
+						 * or country name
+						 */
+						String sea_country = s.getCountry();
+						String[] countries = getStrings(sea_country);
+						
+						for(int i = 0; i < countries.length; i++){
+							
+							for(Located l : s.getLocated()){
+								
+								if(countries[i].compareToIgnoreCase(l.getCountry()) == 0){
+									
+									flag = true;
+									// get the provinces from located
+									String[] loc_prov = getStrings(l.getProvince());
+									// loop through province name and get province name that match
+									for(int j = 0; j < loc_prov.length; j++){
+										// get the province name 
+										prov = compareProv(loc_prov[j], country);
+										output.write("INSERT INTO geo_sea VALUES ("
+												+ stringOrNull(s.getName()) + ","
+												+ stringOrNull(l.getCountry()) + ","
+												+ stringOrNull(prov)
+												+ ");\n" );
+										
+									}
+									break;
+								} else {flag = false; }			
+							}
+							// if flag is false, country doesn't have a province and get name 
+							// of country instead
+							if(flag == false){
+								for(Country c : country){
+									if(countries[i].compareToIgnoreCase(c.getCode()) == 0){
+									
+										prov = c.getName();
+										output.write("INSERT INTO geo_sea VALUES ("
+												+ stringOrNull(s.getName()) + ","
+												+ stringOrNull(countries[i]) + ","
+												+ stringOrNull(prov)
+												+ ");\n" );
+									}
+								}
+								
+							}
+							
+						}
+					}
+				}
+				output.close();
+				commit("geo_sea");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else{
+			System.out.println("Could not append geo_sea table to file.");
+		}
+		
+	}
+
+
+
+	/* This compares the id of the province with the province from located */
+	/* If matches, return the name of the province */
+	private String compareProv(String string, ArrayList<Country> country) {
+			for(Country c : country){
+				// if there is no province, continue to the next country
+				if(c.getProvince() == null){
+					continue;
+				}
+				
+					for(Province p : c.getProvince()){
+						
+						if(p.getId().compareTo(string) == 0){
+							// Debug
+						//	System.out.println(p.getId() + " " + string + " " + p.getName());
+							return p.getName();
+						}
+					}
+			}
+			
+		
+		return null;
+	}
+
 	/* Insert into desert(name, area, geoCoord) */
 	private void insertDesert(ArrayList<Desert> desert) {
+		
 		File f = new File("countries.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){

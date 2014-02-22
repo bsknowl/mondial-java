@@ -33,9 +33,9 @@ public class Country {
 	 // or 1 or more province
 	 ArrayList<City> city;
 	 ArrayList<Province> province;
-    public Country(){
-    	
-    }
+	 public Country(){
+		 
+	 }
    
     //country name
     @XmlAttribute(name="car_code")
@@ -242,11 +242,11 @@ public class Country {
     
     
     // call province class for city classes
-    @XmlElement
+    
     public ArrayList<Province> getProvince(){
         return province;
     }
-
+    @XmlElement
     public void setProvince(ArrayList<Province> province){
         this.province = province;
     }

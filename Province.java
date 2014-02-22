@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -18,6 +17,9 @@ public class Province {
 	ArrayList<City> city;
 	
 	
+	public Province(){
+		
+	}
 	// province name
 	@XmlElement
 	public String getName(){
