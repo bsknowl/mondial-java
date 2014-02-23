@@ -106,7 +106,7 @@ public class Main {
             m.insertGeoMountain(mountain, country); // done off by count ~2 (under)
             m.insertGeoDesert(desert, country); // done
             m.mergesWith(sea);/* Done, count good, but because symmetric it some are off */
-        //    m.located(country, river, lake, sea); // located
+            m.located(country, river, lake, sea); // done, off by 1
             // locatedOn
             // islandIn
             // mountainOnIsland
@@ -123,6 +123,9 @@ public class Main {
 		String river= null, river_name = null;
 		String sea = null, sea_name = null;
 		String lake = null, lake_name = null;
+		boolean river_flag = false;
+		boolean sea_flag = false;
+		boolean lake_flag = false;
 						// loop over countries then cities/province
 						// check for located_at
 						// get the id from located_at
@@ -131,52 +134,84 @@ public class Main {
 							//debug
 							
 							if(coun.getProvince() != null){
+								// debug
+								// System.out.print("country: " + coun.getName() + " " + coun.getCode()+ "\t");
 								for(Province pro : coun.getProvince()){
+									
 									if(pro.getCity() != null){
+										//debug
+										//System.out.print("Province: " + pro.getName() + "\n");
 										for(City cit : pro.getCity()){
+											
+											//System.out.print("City: " + cit.getName() + "\n");
 											if(cit.getlocated_at() != null){
+												int count = 0;
 												for(Located_At loc : cit.getlocated_at()){
-													// iterate over river
+													count++;
 													
-													if(loc.getRiver() != null){
-														
-															river = loc.getRiver();
+													/* We need to get the river | sea | lake id and compare to get the name
+													 *  if we get a repeated one, insert into the table the previous 
+													 * and retrieve the next name. if we reach to where we don't get repeats,
+													 * insert into table and move on to the next city/province
+													 */
+													// iterate over river, lake, sea
+													river = loc.getRiver();
+													sea = loc.getSea();
+													lake = loc.getLake();
+														if(river != null){
+															if(river_flag == true)
+																insert(cit.getName(), pro.getName(), coun.getCode(), river_name, lake_name, sea_name);
+																//river_flag = false;
+																river_name = null;
+																lake_name = null;
+																sea_name = null;
+															
 															for(River riv : river2){
 																if( riv.getId().compareToIgnoreCase(river) == 0){
 																	river_name = riv.getName();
-																	
-																}
-																
+																	river_flag = true;
+																	}
 															}
-														
-														
-														break;
-													}
-													if(loc.getSea() != null){
-														
-															sea = loc.getSea();
+														//	System.out.println("River_name: " + river_name);
+															
+														} else if(sea != null){
+															if(sea_flag == true)
+																insert(cit.getName(), pro.getName(), coun.getCode(), river_name, lake_name, sea_name);
+																
+																river_name =null;
+																lake_name = null;
+																sea_name = null;
+															
 															for(Sea s : sea2){
 																if( s.getId().compareToIgnoreCase(sea) == 0){
 																	sea_name = s.getName();
-																	//	insert(cit.getName(), pro.getName(), coun.getCode(), null,null, s.getName());
+																	sea_flag = true;
 																}
 															}
+														} else if(lake != null){
+															if(lake_flag == true)
+																insert(cit.getName(), pro.getName(), coun.getCode(), river_name, lake_name, sea_name);
+																
+																river_name = null;
+																lake_name = null;
+																sea_name = null;
 															
-														
-													}
-													if(loc.getLake() != null){
-													
-															lake = loc.getLake();
-																for(Lake lak : lake2){
-																	if( lak.getId().compareToIgnoreCase(lake) == 0){
-																		lake_name = lak.getName();
-																		//insert(cit.getName(), pro.getName(), coun.getCode(), null,lak.getName(), null);
-																	}
+															for(Lake lak : lake2){
+																if( lak.getId().compareToIgnoreCase(lake) == 0){
+																	lake_name = lak.getName();
+																	lake_flag = true;
 																}
-														
-													} 
-													
-													insert(cit.getName(), pro.getName(), coun.getCode(), river_name, lake_name, sea_name);
+															}
+														}
+														if(count == cit.getlocated_at().size()){
+															insert(cit.getName(), pro.getName(), coun.getCode(), river_name, lake_name, sea_name);
+															river_flag =false;
+															river_name = null;
+															sea_flag = false;
+															sea_name = null;
+															lake_flag = false;
+															lake_name = null;
+														}
 												}
 											}
 										}
@@ -188,43 +223,81 @@ public class Main {
 								// make sure city exists
 								if(coun.getCity() != null){
 									
-									for(City ci : coun.getCity()){
+									for(City cit : coun.getCity()){
 									//	System.out.println("city: " + ci.getName());
 										
 										// located_at exists
-										if(ci.getlocated_at() != null){
-										
-											for(Located_At loc : ci.getlocated_at()){
-												// iterate over river
-												//System.out.println("located_at: " + loc.getWaterType());
-												
-												// get river|lake|sea
-												if(loc.getRiver() != null){
+										if(cit.getlocated_at() != null){
+										int count = 0;
+											for(Located_At loc : cit.getlocated_at()){
+												count++;
+													// iterate over river, lake, sea
+												/* We need to get the river | sea | lake id and compare to get the name
+												 *  if we get a repeated one, insert into the table the previous 
+												 * and retrieve the next name. if we reach to where we don't get repeats,
+												 * insert into table and move on to the next city...
+												 */
 													river = loc.getRiver();
-													for(River riv : river2){
-														if( riv.getId().compareToIgnoreCase(river) == 0){
-															insert(ci.getName(), coun.getName(), coun.getCode(), riv.getName(), null, null);
-														}
-													}
-													
-													
-												}
-												if(loc.getSea() != null){
 													sea = loc.getSea();
-													for(Sea s : sea2){
-														if( s.getId().compareToIgnoreCase(sea) == 0){
-															insert(ci.getName(), coun.getName(), coun.getCode(), null,null, s.getName());
-														}
-													}
-												}
-												if(loc.getLake() != null){
 													lake = loc.getLake();
-													for(Lake lak : lake2){
-														if( lak.getId().compareToIgnoreCase(lake) == 0){
-															insert(ci.getName(), coun.getName(), coun.getCode(), null,lak.getName(), null);
+													
+													if(river != null){
+															if(river_flag == true)
+																insert(cit.getName(), coun.getName(), coun.getCode(), river_name, lake_name, sea_name);
+																river_name = null;
+																lake_name = null;
+																sea_name = null;
+															
+															for(River riv : river2){
+																if( riv.getId().compareToIgnoreCase(river) == 0){
+																	river_name = riv.getName();
+																	river_flag = true;
+																	}
+															}
+															
+														} else if(sea != null){
+															if(sea_flag == true)
+																insert(cit.getName(), coun.getName(), coun.getCode(), river_name, lake_name, sea_name);
+																
+																river_name =null;
+																lake_name = null;
+																sea_name = null;
+															
+															for(Sea s : sea2){
+																if( s.getId().compareToIgnoreCase(sea) == 0){
+																	sea_name = s.getName();
+																	sea_flag = true;
+																}
+															}
+														} else if(lake != null){
+															if(lake_flag == true)
+																insert(cit.getName(), coun.getName(), coun.getCode(), river_name, lake_name, sea_name);
+																
+																river_name = null;
+																lake_name = null;
+																sea_name = null;
+															
+															for(Lake lak : lake2){
+																if( lak.getId().compareToIgnoreCase(lake) == 0){
+																	lake_name = lak.getName();
+																	lake_flag = true;
+																}
+															}
 														}
-													}
-												}
+													
+													// when get_located reaches end of block, insert into the table 
+														if(count == cit.getlocated_at().size()){
+															insert(cit.getName(), coun.getName(), coun.getCode(), river_name, lake_name, sea_name);
+															river_flag =false;
+															river_name = null;
+															sea_flag = false;
+															sea_name = null;
+															lake_flag = false;
+															lake_name = null;
+														}
+														
+												
+												
 									}
 								}
 							}
@@ -249,6 +322,7 @@ public class Main {
 						output = new BufferedWriter(new FileWriter(f, true));
 						output.write("INSERT INTO located VALUES ("
 								+ stringOrNull(name) + "," + stringOrNull(name2) + ","
+								+ stringOrNull(code) + ","
 								+ stringOrNull(name3) + "," + stringOrNull(string) + ","
 								+ stringOrNull(string2) + ");\n");
 						output.close();

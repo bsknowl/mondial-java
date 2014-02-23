@@ -1,13 +1,13 @@
 import javax.xml.bind.annotation.XmlAttribute;
 
-public class Located_At {
+public class Located_At extends Elements{
 
 	private String watertype;
 	private String river;
 	private String sea;
 	private String lake;
 	
-	@XmlAttribute
+	@XmlAttribute(name="watertype")
 	public String getWaterType(){
 		return watertype;
 	}
