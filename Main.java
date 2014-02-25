@@ -1882,8 +1882,13 @@ public class Main {
 							 */
 							String capital = null;
 							if(country.province.get(i).city != null){
-							//	System.out.println(country.province.get(i).city.get(0).name);
-								capital = country.province.get(i).city.get(0).name;
+                                capital = country.province.get(i).getCapital();
+                                for(City cities : country.getProvince().get(i).getCity()){
+                                    if(cities.cityId.equals(capital)){
+                                        capital = cities.getName();
+                                        break;
+                                    }
+                                }
 							}
 						
 							/* Insert(province name, code, pop, area, capital, name) */
@@ -1899,12 +1904,26 @@ public class Main {
 						// enter the capital city of country, check if null for np exception
 						// capital usually is the first city
 							if(country.city != null){
+                                /* Get the capital of the province, must check if city is null
+							 * for null pointer exception
+							 */
+                                String capital = null;
+                                if(country.getCapital() != null){
+                                    capital = country.getCapital();
+                                    for(City cities : country.getCity()){
+                                        if(cities.cityId.equals(capital)){
+                                            capital = cities.getName();
+                                            break;
+                                        }
+                                    }
+                                }
+
 								/* Insert(country, code, pop, area, capital, name) */
 								output.write("INSERT INTO province VALUES (" + stringOrNull(country.name) + ","
 										+ stringOrNull(country.code) + "," 
 										+ numOrNull(country.population) + ","
 										+ numOrNull(country.area) + ","
-										+ stringOrNull(country.city.get(0).name) + "," + stringOrNull(country.name) + ");\n");
+										+ stringOrNull(capital) + "," + stringOrNull(country.name) + ");\n");
 							}	
 						}
 					}
