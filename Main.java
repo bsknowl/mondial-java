@@ -86,25 +86,25 @@ public class Main {
             m.insertCity(country);		// done off by 4...too many to try and look at
             m.insertProvince(country); // done exact count
             m.insertOrganization(organization); // done exact count
-            m.insertIsMember(organization); //done 
-            m.insertSea(sea); 	// done
-            m.insertRiver(river);// done
-            m.insertRiverThrough(river); // done
-            m.insertLake(lake); // done
-            m.insertIsland(island); // done
-            m.insertMountain(mountain); // done 
-            m.insertDesert(desert); // done
+            m.insertIsMember(organization); //done exact count!!!!
+            m.insertSea(sea); 	// done exact count
+            m.insertRiver(river);// done exact count
+            m.insertRiverThrough(river); // done exact count
+            m.insertLake(lake); // done exact count 
+            m.insertIsland(island); // done exact count
+            m.insertMountain(mountain); // done exact count
+            m.insertDesert(desert); // done exact count
             
             // could have made one method for the geo, but oh well
             
             m.insertGeoSea(sea, country); // done over by 2 entries (prob good)
-            m.insertGeoRiver(river, country); // done
+            m.insertGeoRiver(river, country); // done exact count
             m.insertGeoSource(river, country); // done off by count of ~5 entries (idk yet)
             m.insertGeoEstuary(river, country); // done off by count ~16 entries (some not in xml)
-            m.insertGeoLake(lake, country); // done
-            m.insertGeoIsland(island, country); // done
+            m.insertGeoLake(lake, country); // done exact count
+            m.insertGeoIsland(island, country); // done exact count
             m.insertGeoMountain(mountain, country); // done off by count ~2 (under)
-            m.insertGeoDesert(desert, country); // done
+            m.insertGeoDesert(desert, country); // done exact count
             m.mergesWith(sea);/* Done, count good, but because symmetric it some are off */
             m.located(country, river, lake, sea); // done, off by 1
             // locatedOn
