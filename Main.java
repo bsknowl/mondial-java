@@ -108,8 +108,8 @@ public class Main {
             m.mergesWith(sea);/* Done, count good, but because symmetric it some are off */
             m.located(country, river, lake, sea); // done, off by 1
             // locatedOn
-            // islandIn
-            // mountainOnIsland
+            m.insertIslandIn(island); // incomplete - doesn't handle all cases and ordering is wrong - sea string is in the wrong format
+            m.insertMountainOnIsland(mountain); // incomplete - sea string is in the wrong format
             // DONE!
             
             
@@ -1844,6 +1844,69 @@ public class Main {
             }
         } else{
             System.out.println("Could not append organization table to file.");
+        }
+    }
+
+    // Insert islandIn
+    public void insertIslandIn(ArrayList<Island> m){
+        File f = new File("countries.sql");
+        // does file exist? append if yes, else print no
+        if(f.exists()){
+            try{
+                output = new BufferedWriter(new FileWriter(f, true));
+
+                // insert mountainOnIsland values
+                for(int i = 0; i < m.size(); i++){
+                    if(m.get(i).getSea() != null){
+                        String[] seas = getStrings(m.get(i).getSea());
+                        for(int j = 0; j < seas.length; j++) {
+                            String sea = seas[j];
+                            output.write("INSERT INTO islandIn VALUES (" + stringOrNull(m.get(i).getName())
+                                    + "," + stringOrNull(sea)
+                                    + "," + stringOrNull(m.get(i).getLake())
+                                    + "," + stringOrNull(m.get(i).getRiver())+");\n" );
+                        }
+                    }else{
+                        output.write("INSERT INTO islandIn VALUES (" + stringOrNull(m.get(i).getName())
+                                + ",NULL"
+                                + "," + stringOrNull(m.get(i).getLake())
+                                + "," + stringOrNull(m.get(i).getRiver())+");\n" );
+                    }
+                }
+                output.write("\nCOMMIT;\n\n\n");
+                output.close();
+                System.out.println("Appended islandIn table successfully");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else{
+            System.out.println("Could not append islandIn table to file.");
+        }
+    }
+
+    // Insert mountain
+    public void insertMountainOnIsland(ArrayList<Mountain> m){
+        File f = new File("countries.sql");
+        // does file exist? append if yes, else print no
+        if(f.exists()){
+            try{
+                output = new BufferedWriter(new FileWriter(f, true));
+
+                // insert mountainOnIsland values
+                for(int i = 0; i < m.size(); i++){
+                    if(m.get(i).getIsland() != null){
+                        output.write("INSERT INTO mountainOnIsland VALUES (" + stringOrNull(m.get(i).getName())
+                                + "," + stringOrNull(m.get(i).getIsland()) +");\n" );
+                    }
+                }
+                output.write("\nCOMMIT;\n\n\n");
+                output.close();
+                System.out.println("Appended mountainOnIsland table successfully");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else{
+            System.out.println("Could not append mountainOnIsland table to file.");
         }
     }
 
