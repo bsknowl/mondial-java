@@ -4,11 +4,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 public class Sea extends Elements{
-
-	// Elements 
-	String name;  // sea name
-	String area;	// area of sea (optional)
-	String depth;	// dpeth of sea (optional)
 	
 	// Attributes
 	

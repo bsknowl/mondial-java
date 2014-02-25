@@ -1308,7 +1308,7 @@ public class Main {
 						if(r.through != null){
 							for (Through t : r.through){
 								output.write("INSERT INTO riverthrough VALUES ("
-										+ stringOrNull(r.name) + ","
+										+ stringOrNull(r.getName()) + ","
 										 + stringOrNull(t.lake) +
 												");\n" );
 							}
@@ -1343,7 +1343,7 @@ public class Main {
 						String flows_to_s = flowsTo(r.to, "sea");
 						
 							output.write("INSERT INTO river VALUES ("
-									+ stringOrNull(r.name) + "," + stringOrNull(flows_to_r) + ","
+									+ stringOrNull(r.getName()) + "," + stringOrNull(flows_to_r) + ","
 									+ stringOrNull(flows_to_l) + "," + stringOrNull(flows_to_s) + ","
 									+ numOrNull(r.length) + "," 
 									+ "GeoCoord(" + r.source.getLongitude() + "," 
@@ -1397,8 +1397,8 @@ public class Main {
 				for(Sea s : sea){
 					
 							output.write("INSERT INTO sea VALUES ("
-									+ stringOrNull(s.name) + ","
-									+ numOrNull(s.depth)
+									+ stringOrNull(s.getName()) + ","
+									+ numOrNull(s.getDepth())
 									 + ");\n" );
 						
 					}
