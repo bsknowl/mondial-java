@@ -1613,11 +1613,13 @@ public class Main {
 							//create Insert into city table
 							// if province exists, insert, else insert null
 							
-								output.write("INSERT INTO City VALUES (" + stringOrNull(c.getName()) 
-									+ "," + stringOrNull(c.getCode()) + "," + stringOrNull(coun.getCapital())
-									+ "," + numOrNull(c.getPopulation()) + "," 
-									+ numOrNull(c.getLongitude())
-									+ "," + numOrNull(c.getLatitude()) + ","
+								output.write("INSERT INTO City VALUES ("
+                                    + stringOrNull(c.getName()) + ","
+									+ stringOrNull(c.getCode())+ ","
+                                    + stringOrNull(coun.getName())+ ","
+									+ numOrNull(c.getPopulation()) + ","
+									+ numOrNull(c.getLongitude())+ ","
+									+ numOrNull(c.getLatitude()) + ","
 									+ numOrNull(c.getElevation()) + ");\n");
 							//debugging
 							//System.out.println(m.get(i).getCity().get(j).name);
