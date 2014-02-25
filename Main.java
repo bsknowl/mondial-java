@@ -1600,48 +1600,50 @@ public class Main {
 				
 				// get the cities for the given country and loop through each country
 				// then loop through the city array to grab cities
-				for(int i = 0; i < m.size(); i++){
+				for(Country coun : m){
 					// if province null, just insert null
-					if(m.get(i).province == null){
+					if(coun.getProvince() == null){
 					// check if array is not null then proceed (avoids null pointer exception)
-						if(m.get(i).getCity() != null){
+						if(coun.getCity() != null){
 						
 						// debug
 						//System.out.println(m.size() + " " + m.get(i).name + " " + m.get(i).city.size());
-						for(int j = 0; j < m.get(i).getCity().size(); j++){
+						for(City c : coun.getCity()){
 							//create Insert into city table
 							// if province exists, insert, else insert null
 							
-								output.write("INSERT INTO City VALUES (" + stringOrNull(m.get(i).city.get(j).name) 
-									+ "," + stringOrNull(m.get(i).city.get(j).code) + "," + stringOrNull(m.get(i).name)
-									+ "," + numOrNull(m.get(i).city.get(j).population) + "," 
-									+ numOrNull(m.get(i).city.get(j).longitude)
-									+ "," + numOrNull(m.get(i).city.get(j).latitude) + ",NULL);\n");
+								output.write("INSERT INTO City VALUES (" + stringOrNull(c.getName()) 
+									+ "," + stringOrNull(c.getCode()) + "," + stringOrNull(coun.getCapital())
+									+ "," + numOrNull(c.getPopulation()) + "," 
+									+ numOrNull(c.getLongitude())
+									+ "," + numOrNull(c.getLatitude()) + ","
+									+ numOrNull(c.getElevation()) + ");\n");
 							//debugging
 							//System.out.println(m.get(i).getCity().get(j).name);
 							}
 						}
 					} else {
-						// debug
+						
 						
 						// now inserting cities with non-null provinces
-						for(int j = 0; j < m.get(i).province.size(); j++){
+						for(Province prov : coun.getProvince()){
 							
 							//System.out.println("debug, country.province not null " + m.get(i).province.get(j).name);
-							if(m.get(i).province.get(j).getCity() != null){
+							if(prov.getCity() != null){
 								
 								
-								for(int k = 0; k < m.get(i).province.get(j).city.size(); k++){
+								for(City ci : prov.getCity()){
 									// debug
 									/*	System.out.println("debug, city not null" + m.get(i).province.size()
 											+ " " + m.get(i).province.get(j).getCity().get(k).name);
 									 */	
-									output.write("INSERT INTO City VALUES (" + stringOrNull(m.get(i).province.get(j).city.get(k).name) 
-											+ "," + stringOrNull(m.get(i).province.get(j).city.get(k).code) + "," 
-											+ stringOrNull(m.get(i).province.get(j).name)
-											+ "," + numOrNull(m.get(i).province.get(j).city.get(k).population) + "," 
-											+ numOrNull(m.get(i).province.get(j).city.get(k).longitude)
-											+ "," + numOrNull(m.get(i).province.get(j).city.get(k).latitude) + ",NULL);\n");
+									output.write("INSERT INTO City VALUES (" + stringOrNull(ci.getName()) 
+											+ "," + stringOrNull(ci.getCode()) + "," 
+											+ stringOrNull(prov.getName())
+											+ "," + numOrNull(ci.getPopulation()) + "," 
+											+ numOrNull(ci.getLongitude())
+											+ "," + numOrNull(ci.getLatitude()) + ","
+											+ numOrNull(ci.getElevation()) + ");\n");
 								}
 							}
 						}

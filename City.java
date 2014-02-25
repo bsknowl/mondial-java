@@ -8,6 +8,7 @@ import com.sun.xml.internal.txw2.annotation.XmlElement;
 public class City {
 
 	String cityId, countryCap, code, name, year, longitude, latitude, population;
+	String elevation;
 	private String is_state_cap;
 	
 	private ArrayList<Located_At> located_at;
@@ -64,6 +65,14 @@ public class City {
 	}
 	public void setName(String name){
 		this.name = name;
+	}
+	
+	@XmlElement
+	public String getElevation(){
+		return elevation;
+	}
+	public void setElevation(String elevation){
+		this.elevation = elevation;
 	}
 	
 	// longitude
