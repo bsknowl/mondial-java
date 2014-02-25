@@ -83,7 +83,7 @@ public class Main {
             m.located(country, river, lake, sea); // done, off by 1
             m.locatedOn(country, island);// done exact count
             m.insertIslandIn(island, sea, lake, river); // done counts match
-            m.insertMountainOnIsland(mountain); // incomplete - sea string is in the wrong format
+            m.insertMountainOnIsland(mountain); // done? counts match, looks good
             // DONE!
             
             
