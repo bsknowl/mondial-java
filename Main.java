@@ -390,7 +390,7 @@ public class Main {
 	private void insertGeoDesert(ArrayList<Desert> desert, ArrayList<Country> country) {
 		String name = null;
 		String prov = null;
-		Boolean flag = false;
+		boolean flag = false;
 		File f = new File("countries.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){
@@ -1423,18 +1423,37 @@ public class Main {
 			try{
 				output = new BufferedWriter(new FileWriter(f, true));
 				// insert borders values
-				
-				for(int i = 0; i < m.size(); i++){
-					if(m.get(i).border != null){
-						for(int j = 0; j < m.get(i).border.size(); j++){
-							/* Insert code, border_code, length */
-							output.write("INSERT INTO borders VALUES ("
-									+ stringOrNull(m.get(i).code) + "," 
-									+ stringOrNull(m.get(i).border.get(j).country) + ","
-									+ numOrNull(m.get(i).border.get(j).length) + ");\n" );
+				boolean[] flag = new boolean[m.size()]; /* boolean array to check for symmetric relation */
+				for(Country country : m){
+			//	for(int i = 0; i < m.size(); i++){
+					
+					if(country.getBorder() != null){
+						
+						// loop through borders of the current country
+						for(Border border : country.getBorder()){
+								// need to loop through country to check for
+								// symmetric relation
+							for(Country c : m){
+								
+								/* if the codes match and the flag in the country position is not set yet, insert
+								 * else do not insert and continue on.
+								 */
+								if(border.getCountry().compareToIgnoreCase(c.getCode()) == 0){
+									if(flag[m.indexOf(c)] == false){
+										/* Insert code, border_code, length */
+										output.write("INSERT INTO borders VALUES ("
+												+ stringOrNull(country.getCode()) + "," 
+												+ stringOrNull(border.getCountry()) + ","
+												+ numOrNull(border.getLength()) + ");\n" );
+									
+									}
+								}
+							}
+							
 						}
 							
 					}
+					flag[m.indexOf(country)] = true;
 				}
 				output.close();
 				commit("borders");
