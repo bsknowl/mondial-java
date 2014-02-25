@@ -1279,8 +1279,9 @@ public class Main {
 									+ numOrNull(l.getDepth()) + ","
 									+ numOrNull(l.elevation) + ","
 									+ stringOrNull(l.type) + ","
-									+ stringOrNull(flows) + "GeoCoord(" + numOrNull(l.getLongitude())
-									+ "," + numOrNull(l.getLatitude()) + ")" +
+									+ stringOrNull(flows) + ","
+                                    + "GeoCoord(" + numOrNull(l.getLongitude()) + ","
+                                    + numOrNull(l.getLatitude()) + ")" +
 											");\n" );
 				}
 				output.close();
