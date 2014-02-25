@@ -83,7 +83,7 @@ public class Main {
             m.located(country, river, lake, sea); // done, off by 1
             m.locatedOn(country, island);// done exact count
             m.insertIslandIn(island, sea, lake, river); // done counts match
-            m.insertMountainOnIsland(mountain); // done? counts match, looks good
+            m.insertMountainOnIsland(mountain, island); // done? counts match, looks good
             // DONE!
             
             
@@ -2083,7 +2083,7 @@ public class Main {
 
 
     // Insert mountain
-    public void insertMountainOnIsland(ArrayList<Mountain> m){
+    public void insertMountainOnIsland(ArrayList<Mountain> m, ArrayList<Island> i){
         File f = new File("countries.sql");
         // does file exist? append if yes, else print no
         if(f.exists()){
@@ -2091,10 +2091,17 @@ public class Main {
                 output = new BufferedWriter(new FileWriter(f, true));
 
                 // insert mountainOnIsland values
-                for(int i = 0; i < m.size(); i++){
-                    if(m.get(i).getIsland() != null){
-                        output.write("INSERT INTO mountainOnIsland VALUES (" + stringOrNull(m.get(i).getName())
-                                + "," + stringOrNull(m.get(i).getIsland()) +");\n" );
+                for(Mountain mountain : m){
+                    if(mountain.getIsland() != null){
+                        String outputIsland = mountain.getIsland();
+                        for(Island island : i){
+                            if(outputIsland.equals(island.getId())){
+                                outputIsland = island.getName();
+                                break;
+                            }
+                        }
+                        output.write("INSERT INTO mountainOnIsland VALUES (" + stringOrNull(mountain.getName())
+                                + "," + stringOrNull(outputIsland) +");\n" );
                     }
                 }
                 output.write("\nCOMMIT;\n\n\n");
