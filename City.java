@@ -114,10 +114,11 @@ public class City {
 		this.located_at = located_at;
 	}
 	
-	public ArrayList<Located_On> getLocatedOn(){
+	public ArrayList<Located_On> getlocated_on(){
 		return located_on;
 	}
-	public void setLocatedOn(ArrayList<Located_On> located_on){
+	@XmlElement
+	public void setlocated_on(ArrayList<Located_On> located_on){
 		this.located_on = located_on;
 	}
 	

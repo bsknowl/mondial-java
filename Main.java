@@ -34,32 +34,6 @@ public class Main {
             ArrayList<Island> island = mondial.island;
             ArrayList<Desert> desert = mondial.desert;
             
-            System.out.println("Name: " + country.get(0).name);
-            System.out.println("Code: " + country.get(0).code);
-            System.out.println("Area: " + country.get(0).area);
-            System.out.println("Capital: " + country.get(0).capital);
-            System.out.println("Memberships: " + country.get(0).memberships);
-            System.out.println("Population: " + country.get(0).population);
-            System.out.println("popGrowth: " + country.get(0).popGrowth);
-            System.out.println("inf: " + country.get(0).infant);
-            System.out.println("gdptot: " + country.get(0).gdpTotal);
-            System.out.println("gdpagr: " + country.get(0).gdpAgri);
-            System.out.println("inflation: " + country.get(0).inflation);
-            System.out.println("ind. date: " + country.get(0).indep_date.date);
-            System.out.println("indep. from: " + country.get(0).indep_date.from);
-            System.out.println("indep. from: " + country.get(0).government);
-            System.out.println("Encompassed cont: " + country.get(0).getEncompassed().get(0).getContinent());
-            System.out.println("Encompassed perc: " + country.get(0).getEncompassed().get(0).getPercentage());
-            System.out.println("Ethnic Groups: " + country.get(0).ethnicgroups.get(0).name);
-            System.out.println("Ethnic Groups: " + country.get(0).ethnicgroups.get(0).percentage);
-            System.out.println("Religions: " + country.get(0).religions.get(0).name);
-            System.out.println("Religion percent: " + country.get(0).religions.get(0).percentage);
-            System.out.println("Greece's languages: " + country.get(1).languages.get(0).language);
-            System.out.println("Greece's perc: " + country.get(1).languages.get(0).percentage);
-            System.out.println("Border: " + country.get(0).border.get(0).country);
-            System.out.println("Border length: " + country.get(0).border.get(0).length);
-            System.out.println("Province w/ cities(Greece): " + country.get(1).province.get(0).name + "\n"
-            		+ country.get(1).getProvince().get(0).getCity().get(0).name);
          
             // Insert Statements
             File f = new File("countries.sql");
@@ -107,8 +81,8 @@ public class Main {
             m.insertGeoDesert(desert, country); // done exact count
             m.mergesWith(sea);/* Done, count good, but because symmetric it some are off */
             m.located(country, river, lake, sea); // done, off by 1
-            // locatedOn
-            m.insertIslandIn(island); // incomplete - doesn't handle all cases and ordering is wrong - sea string is in the wrong format
+            m.locatedOn(country, island);// done exact count
+            m.insertIslandIn(island, sea, lake, river); // done counts match
             m.insertMountainOnIsland(mountain); // incomplete - sea string is in the wrong format
             // DONE!
             
@@ -117,7 +91,106 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
-	
+	private void locatedOn(ArrayList<Country> country, ArrayList<Island> island){
+		
+		File f = new File("countries.sql");
+		
+		
+		
+		if(f.exists()){
+			try{
+				
+				output = new BufferedWriter(new FileWriter(f, true));
+				
+				// loop over country and check if there is a province.
+				// loop into province then cities or cities if no province exists
+				// get the located_on element
+				for( Country coun : country){
+					
+					// does province exist?
+					if(coun.getProvince() != null){
+						
+						//loop down into province
+						for(Province prov : coun.getProvince()){
+							
+							// is city inside province not null?
+							if(prov.getCity() != null){
+								
+								// loop over city into located_on
+								for(City city : prov.getCity()){
+									//System.out.println("HELLO WORLD");
+									// is there a located_on in city?
+									if(city.getlocated_on() != null){
+										// loop on located_on
+										
+										for(Located_On loc : city.getlocated_on()){
+											// get id of island
+											String island_id = loc.getIsland();
+											
+											
+											// loop through island and get values to insert into table
+											for(Island isle : island){
+												// if they match, insert into table
+												if(island_id.compareToIgnoreCase(isle.getId()) == 0){
+													output.write("INSERT INTO locatedOn VALUES ("
+															+ stringOrNull(city.getName()) + ","
+															+ stringOrNull(prov.getName()) + ","
+															+ stringOrNull(coun.getCode()) + ","
+															+ stringOrNull(isle.getName())
+															+ ");\n");
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					} else{
+						// loop through city instead of province
+						for(City city : coun.getCity()){
+							
+							// loop on locatedOn if not null
+							if(city.getlocated_on() != null){
+								
+								for(Located_On loc : city.getlocated_on()){
+									
+									// get id of island located_on and match on island
+									String island_id = loc.getIsland();
+									
+									for(Island isle : island){
+										//insert into table if ids match
+										if(island_id.compareToIgnoreCase(isle.getId()) == 0){
+											output.write("INSERT INTO locatedOn VALUES ("
+													+ stringOrNull(city.getName()) + ","
+													+ stringOrNull(coun.getName()) + ","
+													+ stringOrNull(coun.getCode()) + ","
+													+ stringOrNull(isle.getName())
+													+ ");\n");
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+					
+				
+				
+				
+				output.close();
+				commit("locatedAt and located");
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		} else{
+			System.out.println("Could not append locatedOn and located table to file.");
+
+		}
+		
+		
+	}
 	private void located(ArrayList<Country> country, ArrayList<River> river2, ArrayList<Lake> lake2, ArrayList<Sea> sea2) {
 		
 		String river= null, river_name = null;
@@ -308,10 +381,11 @@ public class Main {
 						
 							
 						
-						commit("located");			
+				//		commit("located");			
 		
 	}
-
+	
+	
 	private void insert(String name, String name2, String code, String name3,
 			String string, String string2) {
 		File f = new File("countries.sql");
@@ -1869,42 +1943,95 @@ public class Main {
         }
     }
 
-    // Insert islandIn
-    public void insertIslandIn(ArrayList<Island> m){
-        File f = new File("countries.sql");
+    private void insertIslandIn(ArrayList<Island> island, ArrayList<Sea> sea, 
+    		ArrayList<Lake> lake,
+    		ArrayList<River> river){
+    	
+    	File f = new File("countries.sql");
         // does file exist? append if yes, else print no
         if(f.exists()){
             try{
                 output = new BufferedWriter(new FileWriter(f, true));
-
-                // insert mountainOnIsland values
-                for(int i = 0; i < m.size(); i++){
-                    if(m.get(i).getSea() != null){
-                        String[] seas = getStrings(m.get(i).getSea());
-                        for(int j = 0; j < seas.length; j++) {
-                            String sea = seas[j];
-                            output.write("INSERT INTO islandIn VALUES (" + stringOrNull(m.get(i).getName())
-                                    + "," + stringOrNull(sea)
-                                    + "," + stringOrNull(m.get(i).getLake())
-                                    + "," + stringOrNull(m.get(i).getRiver())+");\n" );
-                        }
-                    }else{
-                        output.write("INSERT INTO islandIn VALUES (" + stringOrNull(m.get(i).getName())
-                                + ",NULL"
-                                + "," + stringOrNull(m.get(i).getLake())
-                                + "," + stringOrNull(m.get(i).getRiver())+");\n" );
-                    }
+                
+                // loop through islands
+                for(Island isle : island){
+                	// get the sea, lake, & river id's
+                	String sea_string = isle.getSea();
+                	String lake_string = isle.getLake();
+                	String river_string = isle.getRiver();
+                	String[] seas;
+                	String[] lakes;
+                	String[] rivers;
+                	
+                	// if the strings are not null, parse and return to insert into table
+                	if(sea_string != null){
+                		// get array of seas id
+                		seas = getStrings(sea_string);
+                		// loop through the array string and seas to match id, insert into table
+                		for(int i = 0; i < seas.length;i++){
+                			for(Sea s : sea){
+                    			if(seas[i].compareToIgnoreCase(s.getId()) == 0){
+                    				output.write("INSERT INTO islandIn VALUES ("
+											+ stringOrNull(isle.getName()) + ","
+											+ stringOrNull(s.getName()) + ","
+											+ stringOrNull(null) + ","
+											+ stringOrNull(null)
+											+ ");\n");
+                    			}
+                    		}
+                		}
+                		
+                	}
+                	if(lake_string != null){
+                		// get array of lakes
+                		lakes = getStrings(lake_string);
+                		// loop through array and lakes then insert into table when ids match
+                		for(int i = 0; i < lakes.length; i++){
+                			for(Lake la : lake){
+                				if(lakes[i].compareToIgnoreCase(la.getId()) == 0){
+                					output.write("INSERT INTO islandIn VALUES ("
+											+ stringOrNull(isle.getName()) + ","
+											+ stringOrNull(null) + ","
+											+ stringOrNull(la.getName()) + ","
+											+ stringOrNull(null)
+											+ ");\n");
+                				}
+                			}
+                		}
+                		
+                	}
+                	if(river_string != null){
+                		rivers = getStrings(river_string);
+                		// get arry of river id, compare to ids of river insert into table
+                		for(int i = 0; i < rivers.length; i++){
+                			for(River r : river){
+                				if(rivers[i].compareToIgnoreCase(r.getId()) == 0){
+                					output.write("INSERT INTO islandIn VALUES ("
+											+ stringOrNull(isle.getName()) + ","
+											+ stringOrNull(null) + ","
+											+ stringOrNull(null) + ","
+											+ stringOrNull(r.getName())
+											+ ");\n");
+                				}
+                			}
+                		}
+                	}
+                	
                 }
-                output.write("\nCOMMIT;\n\n\n");
+                
+                
                 output.close();
-                System.out.println("Appended islandIn table successfully");
+                commit("islandIn");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else{
             System.out.println("Could not append islandIn table to file.");
         }
+
+    	
     }
+
 
     // Insert mountain
     public void insertMountainOnIsland(ArrayList<Mountain> m){
