@@ -73,20 +73,20 @@ public class Main {
                 e.printStackTrace();
             }
            
-            m.insertCountry(country); //done
-            m.insertPopulation(country); // done
-            m.insertPolitics(country); // done
-            m.insertEconomy(country); // done
-            m.insertLanguage(country); // done
-            m.insertEthnicGroup(country); // done
-            m.insertReligion(country); // done
-            m.insertBorders(country); /* done, but has duplicates. i.e. (Al, GR) (GR, AL)? */
-            m.insertContinent(continent); // done
-            m.insertEncompasses(country); // done
-            m.insertCity(country);		// done
-            m.insertProvince(country); // done
-            m.insertOrganization(organization);
-            m.insertIsMember(organization); //done
+            m.insertCountry(country); //done count exact
+            m.insertPopulation(country); // done count exact
+            m.insertPolitics(country); // done count exact
+            m.insertEconomy(country); // done count exact
+            m.insertLanguage(country); // done count exact
+            m.insertEthnicGroup(country); // done count exact
+            m.insertReligion(country); // done count exact
+            m.insertBorders(country); /* done, off by 1 count, but the xml and sql not same
+            m.insertContinent(continent); // done count exact (better be!)
+            m.insertEncompasses(country); // done off by 5, need to fix
+            m.insertCity(country);		// done off by 4...too many to try and look at
+            m.insertProvince(country); // done exact count
+            m.insertOrganization(organization); // done exact count
+            m.insertIsMember(organization); //done 
             m.insertSea(sea); 	// done
             m.insertRiver(river);// done
             m.insertRiverThrough(river); // done
