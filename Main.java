@@ -1548,38 +1548,63 @@ public class Main {
 	// Insert into Country Table, open sql file and write to it.
 	public void insertCountry(ArrayList<Country> m){
 		File f = new File("countries.sql");
-		String country_cap = "";
 		// new Buffered output and loop for the Insert statements
 		try {
 			output = new BufferedWriter(new FileWriter(f, true));
-			for(int i = 0; i < m.size(); i++){
+			for(Country country : m){
 				//enter if a province exists
 				
-				if(m.get(i).getProvince() != null){
+				if(country.getProvince() != null){
 					
-					/*** NEED TO CHECK FOR IS_COUNTRY_CAP == yes through province, then assign it
-					 * the name
-					 */
-					for(int k = 0; k < m.get(i).province.size(); k++){
-						if(m.get(i).province.get(k).city != null){
-							for(int j = 0; j < m.get(i).province.get(k).city.size(); j++){
-								if(m.get(i).province.get(k).city.get(j).countryCap != null){
-									country_cap = m.get(i).province.get(k).name;
+					/* Get capital and capitalProvince values by finding the city id that matches country.getCapital() */
+                    String capital = country.getCapital();
+                    String capitalProvince = null;
+                    for(Province province : country.getProvince()){
+                        if(province.getCity() != null){
+                            for(City city : province.getCity()){
+                                if(city.cityId.equals(capital)){
+                                    capital = city.getName();
+                                    capitalProvince = province.getName();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+					/*for(int k = 0; k < country.province.size(); k++){
+						if(country.province.get(k).city != null){
+							for(int j = 0; j < country.province.get(k).city.size(); j++){
+								if(country.province.get(k).city.get(j).countryCap != null){
+									country_cap = country.province.get(k).name;
 								}
 							}
 						}
-					}
+					}*/
 					
-					output.write("INSERT INTO country VALUES (" + stringOrNull(m.get(i).name)
-							+ "," + stringOrNull(m.get(i).code) + "," + stringOrNull(m.get(i).capital) 
-							+ "," + stringOrNull(country_cap) + "," + numOrNull(m.get(i).area) 
-							+ "," + numOrNull(m.get(i).population) + ");\n");
+					output.write("INSERT INTO country VALUES ("
+                            + stringOrNull(country.name) + ","
+                            + stringOrNull(country.code) + ","
+                            + stringOrNull(capital) + ","
+                            + stringOrNull(capitalProvince) + ","
+                            + numOrNull(country.area) + ","
+                            + numOrNull(country.population) + ");\n");
 				} else{
+                    /* Get capital values by finding the city id that matches country.getCapital() */
+                    String capital = country.getCapital();
+                    for(City city : country.getCity()){
+                        if(city.cityId.equals(capital)){
+                            capital = city.getName();
+                            break;
+                        }
+                    }
+
 					//enter null if no province exists
-					output.write("INSERT INTO country VALUES (" + "" + stringOrNull(m.get(i).name)
-							+ "," + stringOrNull(m.get(i).code) + "," + stringOrNull(m.get(i).capital) 
-							+ "," + stringOrNull(m.get(i).name) + "," + numOrNull(m.get(i).area) 
-							+ "," + numOrNull(m.get(i).population) + ");\n");
+					output.write("INSERT INTO country VALUES ("
+                            + stringOrNull(country.name) + ","
+                            + stringOrNull(country.code) + ","
+                            + stringOrNull(capital) + ","
+                            + stringOrNull(country.name) + ","
+                            + numOrNull(country.area) + ","
+                            + numOrNull(country.population) + ");\n");
 				}
 			}
 			output.close();
@@ -1883,9 +1908,9 @@ public class Main {
 							String capital = null;
 							if(country.province.get(i).city != null){
                                 capital = country.province.get(i).getCapital();
-                                for(City cities : country.getProvince().get(i).getCity()){
-                                    if(cities.cityId.equals(capital)){
-                                        capital = cities.getName();
+                                for(City city : country.getProvince().get(i).getCity()){
+                                    if(city.cityId.equals(capital)){
+                                        capital = city.getName();
                                         break;
                                     }
                                 }
@@ -1910,9 +1935,9 @@ public class Main {
                                 String capital = null;
                                 if(country.getCapital() != null){
                                     capital = country.getCapital();
-                                    for(City cities : country.getCity()){
-                                        if(cities.cityId.equals(capital)){
-                                            capital = cities.getName();
+                                    for(City city : country.getCity()){
+                                        if(city.cityId.equals(capital)){
+                                            capital = city.getName();
                                             break;
                                         }
                                     }
