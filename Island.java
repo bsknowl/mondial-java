@@ -13,6 +13,7 @@ public class Island extends Elements{
 	String id;
 	String sea;
 	String lake;
+    String river;
 	String country;
 	String type;
 	
@@ -43,12 +44,20 @@ public class Island extends Elements{
 	}
 	
 	@XmlAttribute
-	public String getLake(){
-		return lake;
-	}
-	public void setLake(String lake){
-		this.lake = lake;
-	}
+     public String getLake(){
+        return lake;
+    }
+    public void setLake(String lake){
+        this.lake = lake;
+    }
+
+    @XmlAttribute
+    public String getRiver(){
+        return river;
+    }
+    public void setRiver(String river){
+        this.river = river;
+    }
 	
 	@XmlAttribute
 	public String getCountry(){
