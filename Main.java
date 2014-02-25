@@ -59,7 +59,7 @@ public class Main {
             m.insertEncompasses(country); // done count exact
             m.insertCity(country);		// done off by 4...too many to try and look at
             m.insertProvince(country); // done exact count
-            m.insertOrganization(organization); // done exact count
+            m.insertOrganization(organization, country); // done exact count
             m.insertIsMember(organization); //done exact count!!!!
             m.insertSea(sea); 	// done exact count
             m.insertRiver(river);// done exact count
@@ -1543,8 +1543,6 @@ public class Main {
 		}
 	}
 
-
-
 	// Insert into Country Table, open sql file and write to it.
 	public void insertCountry(ArrayList<Country> m){
 		File f = new File("countries.sql");
@@ -1557,52 +1555,25 @@ public class Main {
 				if(country.getProvince() != null){
 					
 					/* Get capital and capitalProvince values by finding the city id that matches country.getCapital() */
-                    String capital = country.getCapital();
-                    String capitalProvince = null;
-                    for(Province province : country.getProvince()){
-                        if(province.getCity() != null){
-                            for(City city : province.getCity()){
-                                if(city.cityId.equals(capital)){
-                                    capital = city.getName();
-                                    capitalProvince = province.getName();
-                                    break;
-                                }
-                            }
-                        }
-                    }
-					/*for(int k = 0; k < country.province.size(); k++){
-						if(country.province.get(k).city != null){
-							for(int j = 0; j < country.province.get(k).city.size(); j++){
-								if(country.province.get(k).city.get(j).countryCap != null){
-									country_cap = country.province.get(k).name;
-								}
-							}
-						}
-					}*/
+                    CityProvinceCountry capital = findCityById(m, country.getCapital());
 					
 					output.write("INSERT INTO country VALUES ("
                             + stringOrNull(country.name) + ","
                             + stringOrNull(country.code) + ","
-                            + stringOrNull(capital) + ","
-                            + stringOrNull(capitalProvince) + ","
+                            + stringOrNull(capital.getCity()) + ","
+                            + stringOrNull(capital.getProvince()) + ","
                             + numOrNull(country.area) + ","
                             + numOrNull(country.population) + ");\n");
 				} else{
                     /* Get capital values by finding the city id that matches country.getCapital() */
-                    String capital = country.getCapital();
-                    for(City city : country.getCity()){
-                        if(city.cityId.equals(capital)){
-                            capital = city.getName();
-                            break;
-                        }
-                    }
+                    CityProvinceCountry capital = findCityById(m, country.getCapital());
 
 					//enter null if no province exists
 					output.write("INSERT INTO country VALUES ("
                             + stringOrNull(country.name) + ","
                             + stringOrNull(country.code) + ","
-                            + stringOrNull(capital) + ","
-                            + stringOrNull(country.name) + ","
+                            + stringOrNull(capital.getCity()) + ","
+                            + stringOrNull(capital.getCountry()) + ","
                             + numOrNull(country.area) + ","
                             + numOrNull(country.population) + ");\n");
 				}
@@ -1966,7 +1937,7 @@ public class Main {
 	}
 
     // Insert organization
-    public void insertOrganization(ArrayList<Organization> m){
+    public void insertOrganization(ArrayList<Organization> m, ArrayList<Country> countries){
         File f = new File("countries.sql");
         // does file exist? append if yes, else print no
         if(f.exists()){
@@ -1975,12 +1946,14 @@ public class Main {
                 // insert Organization values
 
                 for(int i = 0; i < m.size(); i++){
-                    output.write("INSERT INTO organization VALUES (" + stringOrNull(m.get(i).abbrev)
-                            + "," + stringOrNull(m.get(i).name)
-                            + "," + stringOrNull(m.get(i).headq)
-                            + "," + "NULL"
-                            + "," + "NULL"
-                            + "," + stringOrNull(m.get(i).established) +");\n" );
+                    CityProvinceCountry cityProvince = findCityById(countries, m.get(i).headq);
+                    output.write("INSERT INTO organization VALUES ("
+                            + stringOrNull(m.get(i).abbrev) + ","
+                            + stringOrNull(m.get(i).name) + ","
+                            + stringOrNull(cityProvince.getCity()) + ","
+                            + stringOrNull(cityProvince.getCountryCode()) + ","
+                            + stringOrNull(cityProvince.getProvince()) + ","
+                            + stringOrNull(m.get(i).established) +");\n" );
                 }
                 output.close();
                 commit("organization");
@@ -2178,4 +2151,29 @@ public class Main {
 		return sea_country.split(delims);
 		
 	}
+
+    public CityProvinceCountry findCityById(ArrayList<Country> m, String cityId){
+        for(Country country : m){
+            //enter if a province exists
+            if(country.getProvince() != null){
+                for(Province province : country.getProvince()){
+                    if(province.getCity() != null){
+                        for(City city : province.getCity()){
+                            if(city.cityId.equals(cityId)){
+                                return new CityProvinceCountry(city, province, country);
+                            }
+                        }
+                    }
+                }
+            }else{
+                for(City city : country.getCity()){
+                    if(city.cityId.equals(cityId)){
+                        return new CityProvinceCountry(city, null, country);
+                    }
+                }
+            }
+        }
+        return new CityProvinceCountry(null, null, null);
+    }
+
 }
