@@ -48,8 +48,8 @@ public class Main {
             System.out.println("ind. date: " + country.get(0).indep_date.date);
             System.out.println("indep. from: " + country.get(0).indep_date.from);
             System.out.println("indep. from: " + country.get(0).government);
-            System.out.println("Encompassed cont: " + country.get(0).encompassed.continent);
-            System.out.println("Encompassed perc: " + country.get(0).encompassed.percentage);
+            System.out.println("Encompassed cont: " + country.get(0).getEncompassed().get(0).getContinent());
+            System.out.println("Encompassed perc: " + country.get(0).getEncompassed().get(0).getPercentage());
             System.out.println("Ethnic Groups: " + country.get(0).ethnicgroups.get(0).name);
             System.out.println("Ethnic Groups: " + country.get(0).ethnicgroups.get(0).percentage);
             System.out.println("Religions: " + country.get(0).religions.get(0).name);
@@ -80,9 +80,9 @@ public class Main {
             m.insertLanguage(country); // done count exact
             m.insertEthnicGroup(country); // done count exact
             m.insertReligion(country); // done count exact
-            m.insertBorders(country); /* done, off by 1 count, but the xml and sql not same
+            m.insertBorders(country); // done, off by 1 count, but the xml and sql not same 
             m.insertContinent(continent); // done count exact (better be!)
-            m.insertEncompasses(country); // done off by 5, need to fix
+            m.insertEncompasses(country); // done count exact
             m.insertCity(country);		// done off by 4...too many to try and look at
             m.insertProvince(country); // done exact count
             m.insertOrganization(organization); // done exact count
@@ -1394,13 +1394,16 @@ public class Main {
 				output = new BufferedWriter(new FileWriter(f, true));
 				// insert encompasses values
 				
-				for(int i = 0; i < m.size(); i++){
-					if(m.get(i).encompassed != null){
+				for(Country country : m){
+			//	for(int i = 0; i < m.size(); i++){
+					if(country.getEncompassed() != null){
+						for(Encompassed enc : country.getEncompassed()){
 							/* Insert code, continent, percent */
 							output.write("INSERT INTO encompasses VALUES ("
-									+ stringOrNull(m.get(i).code) + "," 
-									+ stringOrNull(m.get(i).encompassed.continent) + ","
-									+ numOrNull(m.get(i).encompassed.percentage) + ");\n" );
+									+ stringOrNull(country.getCode()) + "," 
+									+ stringOrNull(enc.getContinent()) + ","
+									+ numOrNull(enc.getPercentage()) + ");\n" );
+						}
 							
 					}
 				}

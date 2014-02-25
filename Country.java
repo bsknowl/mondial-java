@@ -22,7 +22,7 @@ public class Country {
     
      Indep_Date indep_date;
      Dependent dependent;
-     Encompassed encompassed;
+     ArrayList<Encompassed> encompassed;
 	 ArrayList<EthnicGroups> ethnicgroups;
 	 ArrayList<Religions> religions;
 	 ArrayList<Languages> languages;
@@ -193,10 +193,10 @@ public class Country {
     /* Figure how to do encompassed */
     // encompassed element, only attr. continent and percentage
     @XmlElement(name="encompassed")
-    public Encompassed getEncompassed(){
+    public ArrayList<Encompassed> getEncompassed(){
     	return encompassed;
     }
-    public void setEncompassed(Encompassed encompassed){
+    public void setEncompassed(ArrayList<Encompassed> encompassed){
     	this.encompassed = encompassed;
     }
  
