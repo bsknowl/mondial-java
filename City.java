@@ -1,9 +1,7 @@
 import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlAttribute;
-
-
-import com.sun.xml.internal.txw2.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElement;
 
 public class City {
 
