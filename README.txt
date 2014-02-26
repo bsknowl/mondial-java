@@ -11,5 +11,9 @@ wrote functions for each of the tables we had to insert and went through our dat
 data.
 
 Build Instructions:
+tar xvzf XMLtoSQL
+/usr/java/jdk1.7.0_45/bin/javac *.java  #Used full path to get it to run on CSIF. Normally just javac *.java will work
+java Main
+
 Requirements: Needs the java compiler and runtime
 Running: When our program is run it reads the mondialXML.xml file from the working directory and writes to output.sql
