@@ -2,9 +2,9 @@
 ** Group Project #2 **
 ======================
 
-* Knowlton, Brian       997670242
-* Waggoner, Prescott    996614827
-* Vargas, Alix          815167168
+* Knowlton, Brian       997670242   Figured out JAXB stuff and wrote a lot of the insert functions
+* Waggoner, Prescott    996614827   Helped write many of the insert functions and other helper functions
+* Vargas, Alix          815167168   Helped write many of the insert functions and classes
 
 We created a Java program using JAXB to parse the XML file and populate classes we created to hold that data. We then
 wrote functions for each of the tables we had to insert and went through our data structures pulling out the necessary
