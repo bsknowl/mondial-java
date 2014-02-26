@@ -59,7 +59,7 @@ public class Main {
             m.insertEncompasses(country); // done count exact
             m.insertCity(country);		// done off by 4...too many to try and look at
             m.insertProvince(country); // done exact count
-            m.insertOrganization(organization); // done exact count
+            m.insertOrganization(organization, country); // done exact count
             m.insertIsMember(organization); //done exact count!!!!
             m.insertSea(sea); 	// done exact count
             m.insertRiver(river);// done exact count
@@ -83,7 +83,7 @@ public class Main {
             m.located(country, river, lake, sea); // done, off by 1
             m.locatedOn(country, island);// done exact count
             m.insertIslandIn(island, sea, lake, river); // done counts match
-            m.insertMountainOnIsland(mountain); // done? counts match, looks good
+            m.insertMountainOnIsland(mountain, island); // done? counts match, looks good
             // DONE!
             
             
@@ -1279,8 +1279,9 @@ public class Main {
 									+ numOrNull(l.getDepth()) + ","
 									+ numOrNull(l.elevation) + ","
 									+ stringOrNull(l.type) + ","
-									+ stringOrNull(flows) + "GeoCoord(" + numOrNull(l.getLongitude())
-									+ "," + numOrNull(l.getLatitude()) + ")" +
+									+ stringOrNull(flows) + ","
+                                    + "GeoCoord(" + numOrNull(l.getLongitude()) + ","
+                                    + numOrNull(l.getLatitude()) + ")" +
 											");\n" );
 				}
 				output.close();
@@ -1307,7 +1308,7 @@ public class Main {
 						if(r.through != null){
 							for (Through t : r.through){
 								output.write("INSERT INTO riverthrough VALUES ("
-										+ stringOrNull(r.name) + ","
+										+ stringOrNull(r.getName()) + ","
 										 + stringOrNull(t.lake) +
 												");\n" );
 							}
@@ -1342,7 +1343,7 @@ public class Main {
 						String flows_to_s = flowsTo(r.to, "sea");
 						
 							output.write("INSERT INTO river VALUES ("
-									+ stringOrNull(r.name) + "," + stringOrNull(flows_to_r) + ","
+									+ stringOrNull(r.getName()) + "," + stringOrNull(flows_to_r) + ","
 									+ stringOrNull(flows_to_l) + "," + stringOrNull(flows_to_s) + ","
 									+ numOrNull(r.length) + "," 
 									+ "GeoCoord(" + r.source.getLongitude() + "," 
@@ -1396,8 +1397,8 @@ public class Main {
 				for(Sea s : sea){
 					
 							output.write("INSERT INTO sea VALUES ("
-									+ stringOrNull(s.name) + ","
-									+ numOrNull(s.depth)
+									+ stringOrNull(s.getName()) + ","
+									+ numOrNull(s.getDepth())
 									 + ");\n" );
 						
 					}
@@ -1542,43 +1543,39 @@ public class Main {
 		}
 	}
 
-
-
 	// Insert into Country Table, open sql file and write to it.
 	public void insertCountry(ArrayList<Country> m){
 		File f = new File("countries.sql");
-		String country_cap = "";
 		// new Buffered output and loop for the Insert statements
 		try {
 			output = new BufferedWriter(new FileWriter(f, true));
-			for(int i = 0; i < m.size(); i++){
+			for(Country country : m){
 				//enter if a province exists
 				
-				if(m.get(i).getProvince() != null){
+				if(country.getProvince() != null){
 					
-					/*** NEED TO CHECK FOR IS_COUNTRY_CAP == yes through province, then assign it
-					 * the name
-					 */
-					for(int k = 0; k < m.get(i).province.size(); k++){
-						if(m.get(i).province.get(k).city != null){
-							for(int j = 0; j < m.get(i).province.get(k).city.size(); j++){
-								if(m.get(i).province.get(k).city.get(j).countryCap != null){
-									country_cap = m.get(i).province.get(k).name;
-								}
-							}
-						}
-					}
+					/* Get capital and capitalProvince values by finding the city id that matches country.getCapital() */
+                    CityProvinceCountry capital = findCityById(m, country.getCapital());
 					
-					output.write("INSERT INTO country VALUES (" + stringOrNull(m.get(i).name)
-							+ "," + stringOrNull(m.get(i).code) + "," + stringOrNull(m.get(i).capital) 
-							+ "," + stringOrNull(country_cap) + "," + numOrNull(m.get(i).area) 
-							+ "," + numOrNull(m.get(i).population) + ");\n");
+					output.write("INSERT INTO country VALUES ("
+                            + stringOrNull(country.name) + ","
+                            + stringOrNull(country.code) + ","
+                            + stringOrNull(capital.getCity()) + ","
+                            + stringOrNull(capital.getProvince()) + ","
+                            + numOrNull(country.area) + ","
+                            + numOrNull(country.population) + ");\n");
 				} else{
+                    /* Get capital values by finding the city id that matches country.getCapital() */
+                    CityProvinceCountry capital = findCityById(m, country.getCapital());
+
 					//enter null if no province exists
-					output.write("INSERT INTO country VALUES (" + "" + stringOrNull(m.get(i).name)
-							+ "," + stringOrNull(m.get(i).code) + "," + stringOrNull(m.get(i).capital) 
-							+ "," + stringOrNull(m.get(i).name) + "," + numOrNull(m.get(i).area) 
-							+ "," + numOrNull(m.get(i).population) + ");\n");
+					output.write("INSERT INTO country VALUES ("
+                            + stringOrNull(country.name) + ","
+                            + stringOrNull(country.code) + ","
+                            + stringOrNull(capital.getCity()) + ","
+                            + stringOrNull(capital.getCountry()) + ","
+                            + numOrNull(country.area) + ","
+                            + numOrNull(country.population) + ");\n");
 				}
 			}
 			output.close();
@@ -1612,11 +1609,13 @@ public class Main {
 							//create Insert into city table
 							// if province exists, insert, else insert null
 							
-								output.write("INSERT INTO City VALUES (" + stringOrNull(c.getName()) 
-									+ "," + stringOrNull(c.getCode()) + "," + stringOrNull(coun.getCapital())
-									+ "," + numOrNull(c.getPopulation()) + "," 
-									+ numOrNull(c.getLongitude())
-									+ "," + numOrNull(c.getLatitude()) + ","
+								output.write("INSERT INTO City VALUES ("
+                                    + stringOrNull(c.getName()) + ","
+									+ stringOrNull(c.getCode())+ ","
+                                    + stringOrNull(coun.getName())+ ","
+									+ numOrNull(c.getPopulation()) + ","
+									+ numOrNull(c.getLongitude())+ ","
+									+ numOrNull(c.getLatitude()) + ","
 									+ numOrNull(c.getElevation()) + ");\n");
 							//debugging
 							//System.out.println(m.get(i).getCity().get(j).name);
@@ -1879,8 +1878,13 @@ public class Main {
 							 */
 							String capital = null;
 							if(country.province.get(i).city != null){
-							//	System.out.println(country.province.get(i).city.get(0).name);
-								capital = country.province.get(i).city.get(0).name;
+                                capital = country.province.get(i).getCapital();
+                                for(City city : country.getProvince().get(i).getCity()){
+                                    if(city.cityId.equals(capital)){
+                                        capital = city.getName();
+                                        break;
+                                    }
+                                }
 							}
 						
 							/* Insert(province name, code, pop, area, capital, name) */
@@ -1896,12 +1900,26 @@ public class Main {
 						// enter the capital city of country, check if null for np exception
 						// capital usually is the first city
 							if(country.city != null){
+                                /* Get the capital of the province, must check if city is null
+							 * for null pointer exception
+							 */
+                                String capital = null;
+                                if(country.getCapital() != null){
+                                    capital = country.getCapital();
+                                    for(City city : country.getCity()){
+                                        if(city.cityId.equals(capital)){
+                                            capital = city.getName();
+                                            break;
+                                        }
+                                    }
+                                }
+
 								/* Insert(country, code, pop, area, capital, name) */
 								output.write("INSERT INTO province VALUES (" + stringOrNull(country.name) + ","
 										+ stringOrNull(country.code) + "," 
 										+ numOrNull(country.population) + ","
 										+ numOrNull(country.area) + ","
-										+ stringOrNull(country.city.get(0).name) + "," + stringOrNull(country.name) + ");\n");
+										+ stringOrNull(capital) + "," + stringOrNull(country.name) + ");\n");
 							}	
 						}
 					}
@@ -1919,7 +1937,7 @@ public class Main {
 	}
 
     // Insert organization
-    public void insertOrganization(ArrayList<Organization> m){
+    public void insertOrganization(ArrayList<Organization> m, ArrayList<Country> countries){
         File f = new File("countries.sql");
         // does file exist? append if yes, else print no
         if(f.exists()){
@@ -1928,12 +1946,14 @@ public class Main {
                 // insert Organization values
 
                 for(int i = 0; i < m.size(); i++){
-                    output.write("INSERT INTO organization VALUES (" + stringOrNull(m.get(i).abbrev)
-                            + "," + stringOrNull(m.get(i).name)
-                            + "," + stringOrNull(m.get(i).headq)
-                            + "," + "NULL"
-                            + "," + "NULL"
-                            + "," + stringOrNull(m.get(i).established) +");\n" );
+                    CityProvinceCountry cityProvince = findCityById(countries, m.get(i).headq);
+                    output.write("INSERT INTO organization VALUES ("
+                            + stringOrNull(m.get(i).abbrev) + ","
+                            + stringOrNull(m.get(i).name) + ","
+                            + stringOrNull(cityProvince.getCity()) + ","
+                            + stringOrNull(cityProvince.getCountryCode()) + ","
+                            + stringOrNull(cityProvince.getProvince()) + ","
+                            + stringOrNull(m.get(i).established) +");\n" );
                 }
                 output.close();
                 commit("organization");
@@ -2036,7 +2056,7 @@ public class Main {
 
 
     // Insert mountain
-    public void insertMountainOnIsland(ArrayList<Mountain> m){
+    public void insertMountainOnIsland(ArrayList<Mountain> m, ArrayList<Island> i){
         File f = new File("countries.sql");
         // does file exist? append if yes, else print no
         if(f.exists()){
@@ -2044,10 +2064,17 @@ public class Main {
                 output = new BufferedWriter(new FileWriter(f, true));
 
                 // insert mountainOnIsland values
-                for(int i = 0; i < m.size(); i++){
-                    if(m.get(i).getIsland() != null){
-                        output.write("INSERT INTO mountainOnIsland VALUES (" + stringOrNull(m.get(i).getName())
-                                + "," + stringOrNull(m.get(i).getIsland()) +");\n" );
+                for(Mountain mountain : m){
+                    if(mountain.getIsland() != null){
+                        String outputIsland = mountain.getIsland();
+                        for(Island island : i){
+                            if(outputIsland.equals(island.getId())){
+                                outputIsland = island.getName();
+                                break;
+                            }
+                        }
+                        output.write("INSERT INTO mountainOnIsland VALUES (" + stringOrNull(mountain.getName())
+                                + "," + stringOrNull(outputIsland) +");\n" );
                     }
                 }
                 output.write("\nCOMMIT;\n\n\n");
@@ -2124,4 +2151,29 @@ public class Main {
 		return sea_country.split(delims);
 		
 	}
+
+    public CityProvinceCountry findCityById(ArrayList<Country> m, String cityId){
+        for(Country country : m){
+            //enter if a province exists
+            if(country.getProvince() != null){
+                for(Province province : country.getProvince()){
+                    if(province.getCity() != null){
+                        for(City city : province.getCity()){
+                            if(city.cityId.equals(cityId)){
+                                return new CityProvinceCountry(city, province, country);
+                            }
+                        }
+                    }
+                }
+            }else{
+                for(City city : country.getCity()){
+                    if(city.cityId.equals(cityId)){
+                        return new CityProvinceCountry(city, null, country);
+                    }
+                }
+            }
+        }
+        return new CityProvinceCountry(null, null, null);
+    }
+
 }
