@@ -36,7 +36,7 @@ public class Main {
             
          
             // Insert Statements
-            File f = new File("countries.sql");
+            File f = new File("output.sql");
             // If file exists just write over it, else create new file and write to it.
             try {
                 f.createNewFile();
@@ -93,7 +93,7 @@ public class Main {
 	}
 	private void locatedOn(ArrayList<Country> country, ArrayList<Island> island){
 		
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		
 		
 		
@@ -388,7 +388,7 @@ public class Main {
 	
 	private void insert(String name, String name2, String code, String name3,
 			String string, String string2) {
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// does file exist? append if yes, else print no
 				if(f.exists()){
 					try{
@@ -414,7 +414,7 @@ public class Main {
 
 	/* Insert into mergesWith(sea1, sea2) */
 	private void mergesWith(ArrayList<Sea> sea) {
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// does file exist? append if yes, else print no
 				if(f.exists()){
 					try{
@@ -465,7 +465,7 @@ public class Main {
 		String name = null;
 		String prov = null;
 		boolean flag = false;
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){
 			try{
@@ -555,7 +555,7 @@ public class Main {
 		String name = null;
 		String prov = null;
 		Boolean flag = false;
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){
 			try{
@@ -645,7 +645,7 @@ public class Main {
 		String name = null;
 		String prov = null;
 		Boolean flag = false;
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){
 			try{
@@ -735,7 +735,7 @@ public class Main {
 		String name = null;
 		String prov = null;
 		Boolean flag = false;
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){
 			try{
@@ -825,7 +825,7 @@ public class Main {
 		String name = null;
 		String coun = null;
 		String prov = null;
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){
 			try{
@@ -894,7 +894,7 @@ public class Main {
 		String name = null;
 		String coun = null;
 		String prov = null;
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){
 			try{
@@ -962,7 +962,7 @@ public class Main {
 	private void insertGeoRiver(ArrayList<River> river, ArrayList<Country> country) {
 		Boolean flag = false;
 		String prov = null;
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){
 			try{
@@ -1057,7 +1057,7 @@ public class Main {
 
 		String prov = "";
 		Boolean flag = false; // flag is needed if country is not in located.province
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){
 			try{
@@ -1173,7 +1173,7 @@ public class Main {
 	/* Insert into desert(name, area, geoCoord) */
 	private void insertDesert(ArrayList<Desert> desert) {
 		
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){
 			try{
@@ -1203,7 +1203,7 @@ public class Main {
 	
 	/* Insert into mountains(name, mountains, elevation, type, geoCoord) */
 	private void insertMountain(ArrayList<Mountain> mountain) {
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){
 			try{
@@ -1233,7 +1233,7 @@ public class Main {
 	}
 	/* Insert into island(name, islands, area, elevation, type, geoCoordinates) */
 	private void insertIsland(ArrayList<Island> island) {
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){
 			try{
@@ -1264,7 +1264,7 @@ public class Main {
 
 	
 	private void insertLake(ArrayList<Lake> lake) {
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){
 			try{
@@ -1297,7 +1297,7 @@ public class Main {
 
 		/** THIS INSERTS INTO riverThrough(River, Lake) **/
 		private void insertRiverThrough(ArrayList<River> river) {
-			File f = new File("countries.sql");
+			File f = new File("output.sql");
 			// does file exist? append if yes, else print no
 			if(f.exists()){
 				try{
@@ -1330,7 +1330,7 @@ public class Main {
 	 * @param river
 	 */
 	private void insertRiver(ArrayList<River> river){
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){
 			try{
@@ -1387,7 +1387,7 @@ public class Main {
 
 	/*** THIS INSERTS INTO sea TABLE Sea(Name, depth) ***/
 	private void insertSea(ArrayList<Sea> sea){
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){
 			try{
@@ -1413,7 +1413,7 @@ public class Main {
 		}
 	}
 	private void insertIsMember(ArrayList<Organization> organization) {
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){
 			try{
@@ -1462,7 +1462,7 @@ public class Main {
 	}
 	
 	private void insertEncompasses(ArrayList<Country> m) {
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){
 			try{
@@ -1495,7 +1495,7 @@ public class Main {
 
 
 	private void insertBorders(ArrayList<Country> m) {
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){
 			try{
@@ -1545,7 +1545,7 @@ public class Main {
 
 	// Insert into Country Table, open sql file and write to it.
 	public void insertCountry(ArrayList<Country> m){
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// new Buffered output and loop for the Insert statements
 		try {
 			output = new BufferedWriter(new FileWriter(f, true));
@@ -1589,7 +1589,7 @@ public class Main {
 	
 	// insert into the city Array, just append to file
 	public void insertCity(ArrayList<Country> m){
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		if(f.exists()){
 			
 			try {
@@ -1660,7 +1660,7 @@ public class Main {
 	// insert into population table
 	public void insertPopulation(ArrayList<Country> m){
 
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		if(f.exists()){
 			try{
 				output = new BufferedWriter(new FileWriter(f, true));
@@ -1681,7 +1681,7 @@ public class Main {
 	
 	// politics table
 	public void insertPolitics(ArrayList<Country> m){
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		if(f.exists()){
 			try{
 				output = new BufferedWriter(new FileWriter(f, true));
@@ -1722,7 +1722,7 @@ public class Main {
 
 	//economy table insert
 	public void insertEconomy(ArrayList<Country> m){
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		if(f.exists()){
 			try{
 				output = new BufferedWriter(new FileWriter(f, true));
@@ -1745,7 +1745,7 @@ public class Main {
 	
 	// Insert language table
 	public void insertLanguage(ArrayList<Country> m){
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		if(f.exists()){
 			try{
 				output = new BufferedWriter(new FileWriter(f, true));
@@ -1774,7 +1774,7 @@ public class Main {
 	
 	// Insert Ethnic Group
 	public void insertEthnicGroup(ArrayList<Country> m){
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		// does file exist? append if yes, else print no
 		if(f.exists()){
 			try{
@@ -1803,7 +1803,7 @@ public class Main {
 	
 	// Insert Religion 
     public void insertReligion(ArrayList<Country> m){
-        File f = new File("countries.sql");
+        File f = new File("output.sql");
         // does file exist? append if yes, else print no
         if(f.exists()){
             try{
@@ -1832,7 +1832,7 @@ public class Main {
 		
     // Insert continent
     public void insertContinent(ArrayList<Continent> m){
-        File f = new File("countries.sql");
+        File f = new File("output.sql");
         // does file exist? append if yes, else print no
         if(f.exists()){
             try{
@@ -1853,7 +1853,7 @@ public class Main {
     }
 				
 	public void insertProvince(ArrayList<Country> m){
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		if(f.exists()){
 			try{
 				output = new BufferedWriter(new FileWriter(f, true));
@@ -1938,7 +1938,7 @@ public class Main {
 
     // Insert organization
     public void insertOrganization(ArrayList<Organization> m, ArrayList<Country> countries){
-        File f = new File("countries.sql");
+        File f = new File("output.sql");
         // does file exist? append if yes, else print no
         if(f.exists()){
             try{
@@ -1969,7 +1969,7 @@ public class Main {
     		ArrayList<Lake> lake,
     		ArrayList<River> river){
     	
-    	File f = new File("countries.sql");
+    	File f = new File("output.sql");
         // does file exist? append if yes, else print no
         if(f.exists()){
             try{
@@ -2057,7 +2057,7 @@ public class Main {
 
     // Insert mountain
     public void insertMountainOnIsland(ArrayList<Mountain> m, ArrayList<Island> i){
-        File f = new File("countries.sql");
+        File f = new File("output.sql");
         // does file exist? append if yes, else print no
         if(f.exists()){
             try{
@@ -2128,7 +2128,7 @@ public class Main {
 	 * for what you want to be output onto screen
 	 */
 	private void commit(String s){
-		File f = new File("countries.sql");
+		File f = new File("output.sql");
 		if(f.exists()){
 			try{
 				output = new BufferedWriter(new FileWriter(f, true));
